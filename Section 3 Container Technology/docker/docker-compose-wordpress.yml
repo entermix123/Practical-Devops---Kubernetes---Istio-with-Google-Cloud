@@ -1,0 +1,43 @@
+networks:
+  wordpress-net:
+    name: wordpress-net
+    driver: bridge
+    
+services:
+  mysql:
+    image: mysql:9.5
+    container_name: course-mysql
+    volumes:
+      - ./docker-data/mysql:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpressroot
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    networks:
+      - wordpress-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
+  wordpress:
+    image: wordpress:6.8
+    container_name: course-wordpress
+    volumes:
+      - ./docker-data/wordpress:/var/www/html
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    networks:
+      - wordpress-net
+    depends_on:
+      mysql:
+        condition: service_healthy
