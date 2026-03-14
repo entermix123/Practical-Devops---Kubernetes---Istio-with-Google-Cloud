@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: devops-ingress-haproxy
+  labels:
+    app.kubernetes.io/name: devops-ingress-haproxy
+  annotations:
+    haproxy.org/timeout-connect: "8s"
+    haproxy.org/timeout-server: "8s"
+    haproxy.org/timeout-client: "8s"
+spec:
+  ingressClassName: haproxy
+  rules:
+  - http:
+      paths:
+      - path: /devops/blue
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-blue-clusterip
+            port:
+              number: 8111
+      - path: /devops/yellow
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-yellow-clusterip
+            port:
+              number: 8112

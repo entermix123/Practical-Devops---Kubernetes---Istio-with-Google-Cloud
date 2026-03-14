@@ -1,0 +1,136 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  devops
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: devops-ingress-tls-blue-deployment
+  labels:
+    app.kubernetes.io/name: devops-ingress-tls-blue
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devops-ingress-tls-blue
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: devops-ingress-tls-blue
+        app.kubernetes.io/version: 2.0.0
+    spec:
+      containers:
+      - name: devops-blue
+        image: timpamungkas/devops-blue:2.0.0
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 200M
+        ports:
+        - name:  http
+          containerPort: 8111
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/readiness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/liveness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+  replicas: 1
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: devops-ingress-tls-yellow-deployment
+  labels:
+    app.kubernetes.io/name: devops-ingress-tls-yellow
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devops-ingress-tls-yellow
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: devops-ingress-tls-yellow
+        app.kubernetes.io/version: 2.0.0
+    spec:
+      containers:
+      - name: devops-yellow
+        image: timpamungkas/devops-yellow:2.0.0
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 200M
+        ports:
+        - name:  http
+          containerPort: 8112
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/yellow/actuator/health/readiness
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/yellow/actuator/health/liveness
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+  replicas: 1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-blue-clusterip
+  labels:
+    app.kubernetes.io/name: devops-ingress-tls-blue
+spec:
+  selector:
+    app.kubernetes.io/name: devops-ingress-tls-blue
+  ports:
+  - port: 8111
+    name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-yellow-clusterip
+  labels:
+    app.kubernetes.io/name: devops-ingress-tls-yellow
+spec:
+  selector:
+    app.kubernetes.io/name: devops-ingress-tls-yellow
+  ports:
+  - port: 8112
+    name: http

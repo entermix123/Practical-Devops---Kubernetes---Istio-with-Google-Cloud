@@ -1,0 +1,43 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: devops-ingress-nginx-host-blue
+  labels:
+    app.kubernetes.io/name: devops-ingress-nginx
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: blue.devops.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-blue-clusterip
+            port:
+              number: 8111
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: devops-ingress-nginx-host-yellow
+  labels:
+    app.kubernetes.io/name: devops-ingress-nginx
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: yellow.devops.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-yellow-clusterip
+            port:
+              number: 8112
