@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-blue-nodeport
+  labels:
+    app.kubernetes.io/name: devops-service-blue
+spec:
+  selector:
+    app.kubernetes.io/name: devops-service-blue
+  type: NodePort
+  ports:
+  - port: 8111        # pod port to expose
+    targetPort: 8111  # pod port to expose
+    nodePort: 30111   # optional, if this element not exists then k8s will assign free port between 30000-32767
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-yellow-nodeport
+  labels:
+    app.kubernetes.io/name: devops-service-yellow
+spec:
+  selector:
+    app.kubernetes.io/name: devops-service-yellow
+  type: NodePort
+  ports:
+  - port: 8112        # pod port to expose
+    targetPort: 8112  # pod port to expose
+    nodePort: 30112   # optional, if this element not exists then k8s will assign free port between 30000-32767

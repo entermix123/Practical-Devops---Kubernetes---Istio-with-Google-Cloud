@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-blue-loadbalancer
+  labels:
+    app.kubernetes.io/name: devops-service-blue
+spec:
+  selector:
+    app.kubernetes.io/name: devops-service-blue
+  type: LoadBalancer
+  ports:
+  - port: 8111
+    targetPort: 8111
+    name: blue-loadbalancer-one
+  - port: 9111
+    targetPort: 8111
+    name: blue-loadbalancer-two
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-yellow-loadbalancer
+  labels:
+    app.kubernetes.io/name: devops-service-yellow
+spec:
+  selector:
+    app.kubernetes.io/name: devops-service-yellow
+  type: LoadBalancer
+  ports:
+  - port: 8112
+    targetPort: 8112
+    name: yellow-loadbalancer-one
+  - port: 9112
+    targetPort: 8112
+    name: yellow-loadbalancer-two
