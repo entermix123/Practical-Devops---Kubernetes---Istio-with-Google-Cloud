@@ -1,0 +1,12 @@
+{
+  "something" : [
+    {
+      "name" : "first",
+      "text" : "I am a text in json"
+    },
+    {
+      "name" : "second",
+      "text" : "I am the second text in json"
+    }
+  ]
+}

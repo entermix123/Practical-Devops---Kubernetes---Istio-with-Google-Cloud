@@ -1,0 +1,132 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  devops
+
+---
+
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  namespace: devops
+  name: devops-blue-configmap                                   # configmap-name
+immutable: false    # optional, if set to true then data cannot be changed later
+data:
+  html.color.background: "#288240"                              # configmap-key-A
+  html.color.text: "#eaf27c"                                    # configmap-key-B
+  html.text.one: "This is the FIRST text from k8s configmap"    # configmap-key-C
+  html.text.two: "This is the SECOND text from k8s configmap"   # configmap-key-D
+  html.text.three: "This is the THIRD text from k8s configmap"  # configmap-key-E
+  html.text.four: "This is the FOURTH text from k8s configmap"  # configmap-key-F
+  html.text.five: "This is the FIFTH text from k8s configmap"   # configmap-key-G
+  html.text.six: "This is the SIXTH text from k8s configmap"    # configmap-key-H
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: devops-configmap-deployment
+  labels:
+    app.kubernetes.io/name: devops-configmap
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devops-configmap
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: devops-configmap
+        app.kubernetes.io/version: 2.0.0
+    spec:
+      containers:
+      - name: devops-blue
+        image: timpamungkas/devops-blue:2.0.0
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 200M
+        ports:
+        - name:  http
+          containerPort: 8111
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/readiness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 4
+        livenessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/liveness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 4
+        env:
+          - name: HARDCODED_ENVIRONMENT_VARIABLE
+            value: "Hello! I am hardcoded on k8s deployment yml file"
+          - name: DEVOPS_BLUE_HTML_BG_COLOR     # environment variable name, can be anything (according to coding logic on container)
+            valueFrom:
+              configMapKeyRef:
+                name: devops-blue-configmap     # configmap name to be used (in this sample uses configmap-name)
+                key: html.color.background      # any key on configmap (in this sample uses configmap-key-A)
+          - name: DEVOPS_BLUE_HTML_TEXT_COLOR   # environment variable name, can be anything (according to coding logic on container)
+            valueFrom:
+              configMapKeyRef:
+                name: devops-blue-configmap     # configmap name to be used (in this sample uses configmap-name)
+                key: html.color.text            # any key on configmap (in this sample uses configmap-key-B)
+          - name: DEVOPS_BLUE_HTML_TEXT_ONE     # environment variable name, can be anything (according to coding logic on container)
+            valueFrom:
+              configMapKeyRef:
+                name: devops-blue-configmap     # configmap name to be used (in this sample uses configmap-name)
+                key: html.text.one              # any key on configmap (in this sample uses configmap-key-C)
+          - name: DEVOPS_BLUE_HTML_TEXT_TWO     # environment variable name, can be anything (according to coding logic on container)
+            valueFrom:
+              configMapKeyRef:
+                name: devops-blue-configmap     # configmap name to be used (in this sample uses configmap-name)
+                key: html.text.two              # any key on configmap (in this sample uses configmap-key-D)
+          - name: DEVOPS_BLUE_HTML_TEXT_THREE   # environment variable name, can be anything (according to coding logic on container)
+            valueFrom:
+              configMapKeyRef:
+                name: devops-blue-configmap     # configmap name to be used (in this sample uses configmap-name)
+                key: html.text.three            # any key on configmap (in this sample uses configmap-key-E)
+          - name: DEVOPS_BLUE_HTML_TEXT_FOUR    # environment variable name, can be anything (according to coding logic on container)
+            valueFrom:
+              configMapKeyRef:
+                name: devops-blue-configmap     # configmap name to be used (in this sample uses configmap-name)
+                key: html.text.four             # any key on configmap (in this sample uses configmap-key-F)
+          - name: DEVOPS_BLUE_HTML_TEXT_FIVE    # environment variable name, can be anything (according to coding logic on container)
+            valueFrom:
+              configMapKeyRef:
+                name: devops-blue-configmap     # configmap name to be used (in this sample uses configmap-name)
+                key: html.text.five             # any key on configmap (in this sample uses configmap-key-G)
+          - name: DEVOPS_BLUE_HTML_TEXT_SIX     # environment variable name, can be anything (according to coding logic on container)
+            valueFrom:
+              configMapKeyRef:
+                name: devops-blue-configmap     # configmap name to be used (in this sample uses configmap-name)
+                key: html.text.six              # any key on configmap (in this sample uses configmap-key-H)
+  replicas: 1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-configmap-service
+  labels:
+    app.kubernetes.io/name: devops-configmap
+spec:
+  selector:
+    app.kubernetes.io/name: devops-configmap
+  type:  LoadBalancer
+  ports:
+  - port: 9011         # port number to be available at host
+    targetPort: 8111   # port on pod
