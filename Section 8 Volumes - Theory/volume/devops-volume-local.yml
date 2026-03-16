@@ -1,0 +1,211 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  devops
+
+##########
+# Image local volume - START
+##########
+
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  namespace: devops
+  name: upload-image-storage-class-name    # A1
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: devops
+  name: upload-image-persistent-volume     # B1
+spec:
+  capacity:
+    storage: 100M
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: upload-image-storage-class-name    # A1
+  local:
+    path: /data/k8s-volume/image   # Path inside minikube VM
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - minikube    # Changed from 'docker-desktop' to 'minikube'
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  namespace: devops
+  name: upload-image-pv-claim-name    # C1
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: upload-image-storage-class-name  # A1
+  resources:
+    requests:
+      storage: 50M
+
+##########
+# Image local volume - END
+##########
+
+---
+
+##########
+# doc local volume - START
+##########
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  namespace: devops
+  name: upload-doc-storage-class-name    # A2
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: devops
+  name: upload-doc-persistent-volume     # B2
+spec:
+  capacity:
+    storage: 100M
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: upload-doc-storage-class-name    # A2
+  local:
+    path: /data/k8s-volume/doc   # Path inside minikube VM
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - minikube
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  namespace: devops
+  name: upload-doc-pv-claim-name    # C2
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: upload-doc-storage-class-name  # A2
+  resources:
+    requests:
+      storage: 50M
+
+##########
+# doc local volume - END
+##########
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: devops-volume-deployment-local-two
+  labels:
+    app.kubernetes.io/name: devops-volume
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devops-volume-pod
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: devops-volume-pod
+        app.kubernetes.io/version: 2.0.0
+    spec:
+      volumes:
+        - name: pod-image-storage   # D1
+          persistentVolumeClaim:
+            claimName: upload-image-pv-claim-name   # C1
+        - name: pod-doc-storage     # D2
+          persistentVolumeClaim:
+            claimName: upload-doc-pv-claim-name   # C2
+      containers:
+      - name: devops-blue
+        image: timpamungkas/devops-blue:2.0.0
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 200M
+        ports:
+        - name:  http
+          containerPort: 8111
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/readiness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 4
+        livenessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/liveness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 4
+        volumeMounts:
+          - name: pod-image-storage   # D1
+            mountPath: /upload/image
+          - name: pod-doc-storage     # D2
+            mountPath: /upload/doc
+      - name: alpine-linux
+        image: alpine
+        command: ['sh', '-c', 'echo alpine-linux-container is running ; sleep 3600 ']
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 200M
+        volumeMounts:
+          - name: pod-image-storage   # D1
+            mountPath: /upload-on-alpine/image
+          - name: pod-doc-storage     # D2
+            mountPath: /upload-on-alpine/doc
+  replicas: 2
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-volume-service
+  labels:
+    app.kubernetes.io/name: devops-volume
+spec:
+  selector:
+    app.kubernetes.io/name: devops-volume-pod
+  type:  LoadBalancer
+  ports:
+  - port: 9011         # port number to be available at host
+    targetPort: 8111   # port on pod
