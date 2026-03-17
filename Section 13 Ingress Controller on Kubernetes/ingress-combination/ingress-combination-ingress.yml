@@ -1,0 +1,76 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: ingress-combination-haproxy-blue
+  labels:
+    app.kubernetes.io/name: ingress-combination-haproxy-blue
+  annotations:
+    haproxy.org/rate-limit-period: 1m
+    haproxy.org/rate-limit-requests: "30"
+    haproxy.org/rate-limit-status-code: "429"
+    # Add custom request headers (sent to backend)
+    haproxy.org/request-set-header: |
+      HAProxy-Request-Time %[date(),http_date]
+      HAProxy-Source devops-course
+      HAProxy-More-Request-Header just-sample-dummy-header
+    # Add custom response headers (sent to client)
+    haproxy.org/response-set-header: |
+      HAProxy-Response-Time %[date(),http_date]
+      HAProxy-Version HAProxy-Ingress
+      Strict-Transport-Security "max-age=86400"
+spec:
+  ingressClassName: haproxy
+  tls:
+    - secretName: api-devops-local-cert
+      hosts:
+        - api.devops.local
+  rules:
+  - host: api.devops.local
+    http:
+      paths:
+      - path: /devops/blue
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-blue-clusterip
+            port:
+              number: 8111
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: ingress-combination-haproxy-yellow
+  labels:
+    app.kubernetes.io/name: ingress-combination-haproxy-yellow
+  annotations:
+    haproxy.org/request-redirect: https://www.google.com
+    # Add custom request headers (sent to backend)
+    haproxy.org/request-set-header: |
+      HAProxy-Request-Time %[date(),http_date]
+      HAProxy-Source devops-course
+      HAProxy-More-Request-Header just-sample-dummy-header
+    # Add custom response headers (sent to client)
+    haproxy.org/response-set-header: |
+      HAProxy-Response-Time %[date(),http_date]
+      HAProxy-Version HAProxy-Ingress
+spec:
+  ingressClassName: haproxy
+  tls:
+    - secretName: api-devops-local-cert
+      hosts:
+        - api.devops.local
+  rules:
+  - host: api.devops.local
+    http:
+      paths:
+      - path: /devops/yellow
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-yellow-clusterip
+            port:
+              number: 8112
