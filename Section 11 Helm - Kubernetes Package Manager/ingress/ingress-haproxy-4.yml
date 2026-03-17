@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: devops-ingress-haproxy-host-single
+  labels:
+    app.kubernetes.io/name: devops-ingress-haproxy
+spec:
+  ingressClassName: haproxy
+  rules:
+  - host: api.devops.local
+    http:
+      paths:
+      - path: /devops/blue
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-blue-clusterip
+            port:
+              number: 8111
+      - path: /devops/yellow
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-yellow-clusterip
+            port:
+              number: 8112
+              

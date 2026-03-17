@@ -1,0 +1,39 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: devops-prefix-route
+  namespace: devops
+spec:
+  parentRefs:
+  - name: devops-gateway
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /the-blue
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: ""
+    backendRefs:
+    - name: devops-blue-clusterip
+      port: 8111
+    timeouts:
+      request: 8s
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /the-yellow
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: ""
+    backendRefs:
+    - name: devops-yellow-clusterip
+      port: 8112
+    timeouts:
+      request: 8s

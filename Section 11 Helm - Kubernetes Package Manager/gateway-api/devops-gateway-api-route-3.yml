@@ -1,0 +1,38 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: devops-hostname-route
+  namespace: devops
+spec:
+  parentRefs:
+  - name: devops-gateway
+  hostnames:
+  - blue.devops.local
+  - yellow.devops.local
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /devops/blue
+      headers:
+      - type: Exact
+        name: Host
+        value: blue.devops.local
+    backendRefs:
+    - name: devops-blue-clusterip
+      port: 8111
+    timeouts:
+      request: 8s
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /devops/yellow
+      headers:
+      - type: Exact
+        name: Host
+        value: yellow.devops.local
+    backendRefs:
+    - name: devops-yellow-clusterip
+      port: 8112
+    timeouts:
+      request: 8s

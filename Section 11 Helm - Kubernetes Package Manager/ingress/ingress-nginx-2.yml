@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: devops-ingress-nginx
+  labels:
+    app.kubernetes.io/name: devops-ingress-nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "8"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "8"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "8"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /the-blue/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: devops-blue-clusterip
+            port:
+              number: 8111
+      - path: /the-yellow/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: devops-yellow-clusterip
+            port:
+              number: 8112

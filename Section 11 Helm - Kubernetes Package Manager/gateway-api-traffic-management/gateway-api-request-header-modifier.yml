@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: devops-blue-header-modifier
+  namespace: devops
+spec:
+  parentRefs:
+  - name: devops-gateway
+    namespace: devops
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /devops/blue
+    filters:
+    - type: RequestHeaderModifier
+      requestHeaderModifier:
+        add:
+        - name: my-header-added-by-gateway-api
+          value: a-static-value
+        set:
+        - name: my-header-to-be-changed-by-gateway-api
+          value: this-is-new-value-from-gateway-api
+        remove:
+        - my-header-to-be-removed-by-gateway-api
+    backendRefs:
+    - name: devops-blue-clusterip-2-0-0
+      port: 8111
