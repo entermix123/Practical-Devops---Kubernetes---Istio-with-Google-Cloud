@@ -1,0 +1,37 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: devops-blue-servicemonitor
+  namespace: devops
+  labels:
+    release: my-kube-prometheus-stack
+    app.kubernetes.io/name: devops-monitoring-blue
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devops-monitoring-blue
+  endpoints:
+  - port: http
+    path: /devops/blue/actuator/prometheus
+    interval: 10s
+    scrapeTimeout: 5s
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: devops-yellow-servicemonitor
+  namespace: devops
+  labels:
+    release: my-kube-prometheus-stack
+    app.kubernetes.io/name: devops-monitoring-yellow
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devops-monitoring-yellow
+  endpoints:
+  - port: http
+    path: /devops/yellow/actuator/prometheus
+    interval: 10s
+    scrapeTimeout: 5s

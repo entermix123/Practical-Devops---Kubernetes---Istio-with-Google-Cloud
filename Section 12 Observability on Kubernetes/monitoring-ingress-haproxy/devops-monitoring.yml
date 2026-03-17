@@ -1,0 +1,165 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  devops
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: devops-monitoring-blue-deployment
+  labels:
+    app.kubernetes.io/name: devops-monitoring-blue
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devops-monitoring-blue
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: devops-monitoring-blue
+        app.kubernetes.io/version: 2.0.0
+    spec:
+      containers:
+      - name: devops-blue
+        image: timpamungkas/devops-blue:2.0.0
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 200M
+        ports:
+        - name:  http
+          containerPort: 8111
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/readiness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/liveness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+  replicas: 1
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: devops-monitoring-yellow-deployment
+  labels:
+    app.kubernetes.io/name: devops-monitoring-yellow
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devops-monitoring-yellow
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: devops-monitoring-yellow
+        app.kubernetes.io/version: 2.0.0
+    spec:
+      containers:
+      - name: devops-yellow
+        image: timpamungkas/devops-yellow:2.0.0
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 200M
+        ports:
+        - name:  http
+          containerPort: 8112
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/yellow/actuator/health/readiness
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/yellow/actuator/health/liveness
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+  replicas: 1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-blue-clusterip
+  labels:
+    app.kubernetes.io/name: devops-monitoring-blue
+spec:
+  selector:
+    app.kubernetes.io/name: devops-monitoring-blue
+  ports:
+  - port: 8111
+    name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-yellow-clusterip
+  labels:
+    app.kubernetes.io/name: devops-monitoring-yellow
+spec:
+  selector:
+    app.kubernetes.io/name: devops-monitoring-yellow
+  ports:
+  - port: 8112
+    name: http
+    
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: devops-monitoring-haproxy
+  labels:
+    app.kubernetes.io/name: devops-monitoring-haproxy
+spec:
+  ingressClassName: haproxy
+  rules:
+  - http:
+      paths:
+      - path: /devops/blue
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-blue-clusterip
+            port:
+              number: 8111
+      - path: /devops/yellow
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-yellow-clusterip
+            port:
+              number: 8112
