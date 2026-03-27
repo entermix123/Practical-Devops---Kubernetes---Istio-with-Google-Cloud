@@ -1,0 +1,27 @@
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  namespace: devops
+  name: devops-configmap-one
+data:
+  sample: "Dummy sample for first configmap"
+
+---
+
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  namespace: devops
+  name: devops-configmap-two
+data:
+  another-sample: "Dummy sample for second configmap"
+
+---
+
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  namespace: devops
+  name: devops-configmap-three
+data:
+  more-sample: "Dummy sample for third configmap"  

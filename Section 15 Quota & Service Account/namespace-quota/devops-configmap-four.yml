@@ -1,0 +1,7 @@
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  namespace: devops
+  name: devops-configmap-four
+data:
+  sample-key: "Dummy sample for fourth configmap"
