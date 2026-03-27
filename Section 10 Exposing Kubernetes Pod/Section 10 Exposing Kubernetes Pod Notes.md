@@ -1036,6 +1036,8 @@ First, generate a TLS certificate on https://regery.com/en/security/ssl-tools/se
 [Back to Section 13 Ingress Controller on Kubernetes / 49 Ingress Combination](../Section%2013%20Ingress%20Controller%20on%20Kubernetes/Section%2013%20Ingress%20Controller%20on%20Kubernetes%20Notes.md#return-point-2)    
 [Back to Section 17 Creating and Using Helm Charts / 59 Harbor](../Section%2017%20Creating%20and%20Using%20Helm%20Charts/Section%2017%20Creating%20nad%20Using%20Helm%20Charts%20Notes.md#return-point-1)   
 [Back to Section 17 Creating and Using Helm Charts / 60 Multiple Configurations](../Section%2017%20Creating%20and%20Using%20Helm%20Charts/Section%2017%20Creating%20nad%20Using%20Helm%20Charts%20Notes.md#return-point-2)
+[Back to Section 18 GitOps and Problems That it Solves / 65 GitOp with ArgoCD](../Section%2018%20GitOps%20and%20Problems%20That%20it%20Solves/Section%2018%20GitOps%20and%20Problems%20That%20it%20Solves%20Notes.md#return-point-1)
+
 
 
 Then, create a secret from these TLS certificates. This syntax creates a TLS secret, which we will use later. 

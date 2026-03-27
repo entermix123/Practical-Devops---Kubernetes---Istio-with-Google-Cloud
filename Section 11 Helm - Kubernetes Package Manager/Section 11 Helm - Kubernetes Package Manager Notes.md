@@ -2234,8 +2234,9 @@ There are times when we need to share or upload a configuration to a version con
 
 This lesson is the demonstration flow for using sealed secrets. We have the plain configuration file, with this content. We then create a secret file using the dry-run parameter, so the actual secret is only on the local laptop and not uploaded to the Kubernetes cluster. This local secret file is then processed as a sealed secret, using an additional utility called kubeseal. The result is a sealed secret file. Notice later that this file contains encrypted data. This sealed secret file is the one that should be saved for distribution or put into a version control system like git. This file can only be applied to a Kubernetes cluster with a matching sealed secret controller. So even if we have another Kubernetes cluster with a sealed secret controller installed, this other cluster will not be able to read the sealed secret.
 
-![Sealed Secret Explained](pics/sealed-secret-example.jpg)
-
+<img src="pics/sealed-secret-example.jpg" width="1000" />
+<br>
+<br>
 First, we need to install the sealed secret into the Kubernetes cluster. We will install it using Helm. See the syntax in the course resources and references to install. 
 
     CMD --> helm upgrade --install sealed-secrets sealed-secrets --set-string fullnameOverride=sealed-secrets-controller --repo https://bitnami-labs.github.io/sealed-secrets --namespace kube-system
