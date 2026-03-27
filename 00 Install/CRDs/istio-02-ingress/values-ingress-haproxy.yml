@@ -1,0 +1,33 @@
+controller:
+  replicaCount: 1
+  
+  ingressClass: haproxy
+  
+  service:
+    type: LoadBalancer
+    enablePorts:
+      http: true
+      https: true
+      stat: true
+      admin: true
+      quic: false
+  
+  resources:
+    requests:
+      memory: 128Mi
+    limits:
+      cpu: "0.3"
+      memory: 256Mi
+
+  autoscaling:
+    enabled: false
+
+  serviceMonitor:
+    enabled: true
+    extraLabels:
+      release: kube-prometheus-stack
+    endpoints:
+      - port: stat
+        path: /metrics
+        scheme: http
+        interval: 30s
