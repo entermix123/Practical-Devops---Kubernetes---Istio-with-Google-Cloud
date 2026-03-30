@@ -1,0 +1,64 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istio-sidecar-monitor
+  namespace: istio-system
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchExpressions:
+    - key: security.istio.io/tlsMode
+      operator: Exists
+  namespaceSelector:
+    any: true
+  podMetricsEndpoints:
+  - path: /stats/prometheus
+    interval: 15s
+    relabelings:
+    - action: keep
+      sourceLabels: [__meta_kubernetes_pod_container_name]
+      regex: "istio-proxy"
+    - action: replace
+      sourceLabels: [__address__]
+      regex: ([^:]+)(?::\d+)?
+      replacement: $1:15020
+      targetLabel: __address__
+    - action: replace
+      sourceLabels: [__meta_kubernetes_namespace]
+      targetLabel: namespace
+    - action: replace
+      sourceLabels: [__meta_kubernetes_pod_name]
+      targetLabel: pod_name
+    - action: replace
+      sourceLabels: [__meta_kubernetes_pod_label_app]
+      targetLabel: app
+    - action: replace
+      sourceLabels: [__meta_kubernetes_pod_label_version]
+      targetLabel: version
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-component-monitor
+  namespace: istio-system
+  labels:
+    release: kube-prometheus-stack
+spec: 
+  jobLabel: istio
+  targetLabels:
+  - app
+  namespaceSelector:
+    matchNames:
+    - istio-system
+  selector:
+    matchExpressions:
+    - key: istio
+      operator: In
+      values:
+      - pilot
+  endpoints:
+  - port: http-monitoring
+    interval: 15s

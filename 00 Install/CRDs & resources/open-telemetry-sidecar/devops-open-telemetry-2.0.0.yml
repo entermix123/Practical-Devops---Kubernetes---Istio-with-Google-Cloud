@@ -1,0 +1,278 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devops
+  labels:
+    istio-injection: enabled
+
+---
+
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: otel-instrumentation
+  namespace: devops
+spec:
+  exporter:
+    endpoint: http://jaeger.jaeger.svc.cluster.local:4318
+  propagators:
+    - tracecontext
+    - baggage
+    - b3
+  sampler:
+    type: parentbased_always_on
+  java:
+    image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:latest
+    env:
+      - name: OTEL_EXPORTER_OTLP_PROTOCOL
+        value: http/protobuf
+      - name: OTEL_TRACES_EXPORTER
+        value: otlp
+      - name: OTEL_METRICS_EXPORTER
+        value: none
+      - name: OTEL_LOGS_EXPORTER
+        value: none
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: istio-basic-deployment-blue
+spec:
+  selector:
+    matchLabels:
+      app: istio-basic-blue
+  template:
+    metadata:
+      labels:
+        app: istio-basic-blue
+        version: 2.0.0
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "true"
+    spec:
+      containers:
+      - name: devops-blue
+        image: timpamungkas/devops-blue:2.0.0
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 300Mi
+        ports:
+        - name: http
+          containerPort: 8111
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/readiness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/liveness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 5
+        env:
+          - name: DEVOPS_YELLOW_URL
+            # to local k8s cluster  
+            value: http://devops-yellow-clusterip.devops:8112/devops/yellow
+          - name: DEVOPS_WHITE_URL
+            # to local k8s cluster  
+            value: http://devops-white-clusterip.devops:8113/devops/white
+          - name: MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT
+            value: http://jaeger.jaeger.svc.cluster.local:4318/v1/traces
+  replicas: 1
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: istio-basic-deployment-yellow
+spec:
+  selector:
+    matchLabels:
+      app: istio-basic-yellow
+  template:
+    metadata:
+      labels:
+        app: istio-basic-yellow
+        version: 2.0.0
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "true"
+    spec:
+      containers:
+      - name: devops-yellow
+        image: timpamungkas/devops-yellow:2.0.0
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 300Mi
+        ports:
+        - name: http
+          containerPort: 8112
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/yellow/actuator/health/readiness
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/yellow/actuator/health/liveness
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 5
+        env:
+          - name: DEVOPS_WHITE_URL
+            # to local k8s cluster  
+            value: http://devops-white-clusterip.devops:8113/devops/white
+          - name: MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT
+            value: http://jaeger.jaeger.svc.cluster.local:4318/v1/traces
+  replicas: 1
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: istio-basic-deployment-white
+spec:
+  selector:
+    matchLabels:
+      app: istio-basic-white
+  template:
+    metadata:
+      labels:
+        app: istio-basic-white
+        version: 2.0.0
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "true"
+    spec:
+      containers:
+      - name: devops-white
+        image: timpamungkas/devops-white:2.0.0
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 300Mi
+        ports:
+        - name: http
+          containerPort: 8113
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/white/actuator/health/readiness
+            port: 8113
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/white/actuator/health/liveness
+            port: 8113
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 5
+        env:
+          - name: MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT
+            value: http://jaeger.jaeger.svc.cluster.local:4318/v1/traces
+  replicas: 1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-blue-clusterip
+  labels:
+    app: istio-basic-blue
+    version: 2.0.0
+spec:
+  selector:
+    app: istio-basic-blue
+    version: 2.0.0
+  ports:
+  - port: 8111
+    name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-yellow-clusterip
+  labels:
+    app: istio-basic-yellow
+    version: 2.0.0
+spec:
+  selector:
+    app: istio-basic-yellow
+    version: 2.0.0
+  ports:
+  - port: 8112
+    name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-white-clusterip
+  labels:
+    app: istio-basic-white
+    version: 2.0.0
+spec:
+  selector:
+    app: istio-basic-white
+    version: 2.0.0
+  ports:
+  - port: 8113
+    name: http
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: ingress-istio-basic-haproxy-blue
+  labels:
+    app.kubernetes.io/name: ingress-istio-basic-haproxy-blue
+spec:
+  ingressClassName: haproxy
+  rules:
+  - http:
+      paths:
+      - path: /devops/blue
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-blue-clusterip
+            port:
+              number: 8111

@@ -2,12 +2,12 @@
 
 ## Content
 
-- [Install Minikube setup of microservice application architecture with most required features](#install-minikube-setup-of-microservice-application-architecture-with-most-required-features-1)       
+[Install Minikube setup of microservice application architecture with most required features](#install-minikube-setup-of-microservice-application-architecture-with-most-required-features-1)       
 [77 Install Kube Prometheus](#77-install-kube-prometheus)       
 [78 Install Ingress Controller](#78-install-ingress-controller)     
 [80 Install Istio](#80-install-istio)     
-[77 Install Kube Prometheus](#77-install-kube-prometheus-2)     
-[77 Install Kube Prometheus](#77-install-kube-prometheus-3)     
+[81 Install Jaeger (including cert manager & opentelementry)](#81-install-jaeger-including-cert-manager--opentelementry)     
+[85 Install Kiali](#85-install-kiali)     
 
 
 ## Install Minikube setup of microservice application architecture with most required features
@@ -38,7 +38,8 @@ Make sure that address are added to Windows host list
 - add
 
 ```text
-127.0.0.1 localhost                     
+127.0.0.1 localhost       
+127.0.0.1 jaeger.local                
 127.0.0.1 blue.devops.local
 127.0.0.1 yellow.devops.local           
 127.0.0.1 api.devops.local
@@ -200,18 +201,43 @@ Disable Istion on Ingress Controller
     Warning: resource namespaces/haproxy is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
     namespace/haproxy configured
 
-Restart Deploment
+[⬆ Back to top](#top)
 
-    CMD --> kubectl rollout restart deployment -n haproxy
+## 81 Install Jaeger (including cert manager & opentelementry)
 
-    # result: deployment.apps/haproxy-ingress-kubernetes-ingress restarted
+[⬆ Back to top](#top)
 
-Deploy Application
+The Jaeger version 2 installation requires cert-manager and opentelemetry.
 
-    CMD --> kubectl apply -f devops-istio-basic-deployment-2.0.0.yml
+First, install cert-manager.
+
+    CMD --> helm upgrade --install cert-manager cert-manager --repo https://charts.jetstack.io --namespace cert-manager --create-namespace --set crds.enabled="true"
+
+Install Open Telemetry.
+
+    CMD --> kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml
+
+Add jaeger helm repository and update helm repos
+
+    CMD --> helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+
+    # result: "jaegertracing" has been added to your repositories
+
+    CMD --> helm repo update
+
+    # result: Update Complete. ⎈Happy Helming!⎈
+
+Install Jaeger using values file
+
+    CMD --> helm upgrade --install jaeger jaegertracing/jaeger --version 4.3.2 --values values-jaeger-all-in-one.yml --namespace jaeger --create-namespace
+
+Deploy an application with opentelemetry instrumentation so we don't need to add or change our application code for header propagation.
+
+    CMD --> kubectl apply -f devops-open-telemetry-2.0.0.yml
 
     # result:
     namespace/devops created
+    instrumentation.opentelemetry.io/otel-instrumentation created
     deployment.apps/istio-basic-deployment-blue created
     deployment.apps/istio-basic-deployment-yellow created
     deployment.apps/istio-basic-deployment-white created
@@ -219,51 +245,94 @@ Deploy Application
     service/devops-yellow-clusterip created
     service/devops-white-clusterip created
     ingress.networking.k8s.io/ingress-istio-basic-haproxy-blue created
-    servicemonitor.monitoring.coreos.com/devops-blue-servicemonitor created
-    servicemonitor.monitoring.coreos.com/devops-yellow-servicemonitor created
-    servicemonitor.monitoring.coreos.com/devops-white-servicemonitor created
 
-Enable sidecar injection in 'devops' namespace
+Check the pod. We now have an additional sidecar proxy for OpenTelemetry.
 
-    CMD --> kubectl apply -f devops-istio-enable-sidecar.yml
-
-    # result: namespace/devops configured
-
-Restart application deployments
-
-    CMD --> kubectl rollout restart deployment -n devops
-
-    # result:
-    deployment.apps/istio-basic-deployment-blue restarted
-    deployment.apps/istio-basic-deployment-white restarted
-    deployment.apps/istio-basic-deployment-yellow restarted
-
-Check that sidecar pods are deployed as well
-
-    CMD --> kubectl get pods -n devops
+    CMD --> kubectl get pods -n devops 
 
     # result:
     NAME                                             READY   STATUS    RESTARTS   AGE
-    istio-basic-deployment-blue-858894d5f6-rsz7m    2/2     Running   0           75s
-    istio-basic-deployment-white-5867c888c5-znpmg   2/2     Running   0           75s
-    istio-basic-deployment-yellow-8985dc9d9-kjk99   2/2     Running   0           75s
-
-Start minikube tunnel
-
-    CMD --> minikube tunnel
-
-Access the ingress on the path http://localhost/prometheus/query and verify that there are metrics.
+    istio-basic-deployment-blue-654cf59bd8-jz9mn     1/2     Running   0          78s
+    istio-basic-deployment-white-b78767755-cfjgh     1/2     Running   0          78s
+    istio-basic-deployment-yellow-754c965cbb-s5j9j   1/2     Running   0          78s
 
 [⬆ Back to top](#top)
 
-## 77 Install Kube Prometheus ]
+
+## 85 Install Kiali
 
 [⬆ Back to top](#top)
 
+Add and update Kiali helm repo locally
+
+    CMD --> helm repo add kiali https://kiali.org/helm-charts
+
+    # result: "kiali" has been added to your repositories
+
+    CMD --> helm repo update
+
+    # result: Update Complete. ⎈Happy Helming!⎈
+
+Install Kiali server v2.20.0
+
+    CMD --> helm upgrade --install kiali-server kiali/kiali-server  --namespace istio-system --create-namespace --values values-kiali-server.yml --version 2.20.0
+
+    # resutly:
+    Release "kiali-server" does not exist. Installing it now.
+    NAME: kiali-server
+    LAST DEPLOYED: Sat Mar 28 17:52:01 2026
+    NAMESPACE: istio-system
+    STATUS: deployed
+    REVISION: 1
+    DESCRIPTION: Install complete
+    TEST SUITE: None
+    NOTES:
+    Welcome to Kiali! For more details on Kiali, see: https://kiali.io
+    The Kiali Server [v2.20.0] has been installed in namespace [istio-system]. It will be ready soon.
+    ===============
+
+    (Helm: Chart=[kiali-server], Release=[kiali-server], Version=[2.20.0])
+
+Wait a while and see if it runs. Try accessing it at the ingress address - http://localhost/kiali.
+
+Populate metrics to be sent to Prometheus
+
+
+    CMD --> kubectl apply -f istio-prometheus-telemetry.yml
+
+    # result:
+    configmap/istio unchanged
+    telemetry.telemetry.istio.io/mesh-default configured
+    
+
 [⬆ Back to top](#top)
 
-## 77 Install Kube Prometheus
+
+
+## 85 Install Kiali ]
 
 [⬆ Back to top](#top)
+
+
+
+[⬆ Back to top](#top)
+
+
+
+## 85 Install Kiali ]
+
+[⬆ Back to top](#top)
+
+
+
+[⬆ Back to top](#top)
+
+
+
+## 85 Install Kiali ]
+
+[⬆ Back to top](#top)
+
+
 
 [⬆ Back to top](#top)
