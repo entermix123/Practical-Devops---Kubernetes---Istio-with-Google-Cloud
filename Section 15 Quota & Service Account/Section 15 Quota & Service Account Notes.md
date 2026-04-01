@@ -394,8 +394,12 @@ When we deploy a resource into a namespace, it must be unique within that namesp
 The following table shows the possible namespace quotas to be defined in the configuration. 
 
 <img src="pics/namespace-quota-configuration-1.png" width="800" />
+<br>
+<br>
 
 <img src="pics/namespace-quota-configuration-2.png" width="800" />
+<br>
+<br>
 
 Let's open the resource quota folder and see the resource quota file - devops-resourcequota.yml. Here we define that the CPU limit is 2, the memory limit is 8 gigabytes, and there must be no more than four ConfigMaps in the devops namespace.
 

@@ -204,6 +204,8 @@ Currently, we have only one pod replica, as indicated by the HPA.
 Open the Postman collection in the folder autoscaling. Here, I provide an API to fake CPU load. Run thisendpoint with one CPU thread for 600 seconds.
 
 <img src="pics/postman-hpa-load.png" width="1400" />
+<br>
+<br>
 
  We can see the HPA metrics. Kubernetes will periodically gather metrics, so give it some time. Try querying the HPA several times until we see that CPU utilization is above the threshold. Notice that the replica has now become 2.
 
@@ -297,7 +299,9 @@ StatefulSet configuration is similar to that of a deployment. Additionally, we c
 
 This is the difference between creating a deployment and a stateful set. Assume we will have three replicas. On deployment, the pod has a random suffix as its name. Each pod will have 1 volume and 1 volume claim. All objects (pod, volume, and volume claim) will be provisioned together. And this is for a stateful set. Notice the animation. Pod will be provisioned from the lowest index. The index is numeric, starts at 0, and is used as a suffix on the pod name. Each volume will have 1 claim per pod. 
 
-<img src="pics/statefulset-vs-deployment.png" width="800" />
+<img src="pics/statefulset-vs-deployment.png" width="1000" />
+<br>
+<br>
 
 Open the folder stateful set. To begin with, let's see the deployment - devops-deployment.yml. 
 
@@ -640,6 +644,7 @@ Postman Collection / Stateful Set / GET Stateful Set via Gateway
 <img src="pics/postman-stateful-set-request.png" width="1400" />
 <br>
 <br>
+
 We can also accessthe pod another way, such as port forwarding. I will open three port forwards, one for each pod. 
 
 DONT CLOSE THE TERMINALS !!!
@@ -666,17 +671,26 @@ DONT CLOSE THE TERMINALS !!!
 From the Postman, I will upload one image to each pod. 
 
 <img src="pics/postman-upload-image-zero.png" width="1400" />
+<br>
+<br>
 
 <img src="pics/postman-upload-image-one.png" width="1400" />
+<br>
+<br>
 
 <img src="pics/postman-upload-image-two.png" width="1400" />
 <br>
 <br>
+
 Using port forwarding, we can access the pod directly. When we list the images, we will have one image per pod. Notice the image ID for each pod. 
-<br>
+
 <img src="pics/postman-load-image-zero.png" width="1400" />
+<br>
+<br>
 
 <img src="pics/postman-load-image-one.png" width="1400" />
+<br>
+<br>
 
 <img src="pics/postman-load-image-two.png" width="1400" />    
 <br>
@@ -791,10 +805,16 @@ Wait for the pods t be running and start the port forward for three pods.
 Then check the image list.
 
 <img src="pics/postman-load-image-zero.png" width="1400" />
+<br>
+<br>
 
 <img src="pics/postman-load-image-one.png" width="1400" />
+<br>
+<br>
 
 <img src="pics/postman-load-image-two.png" width="1400" />
+<br>
+<br>
 
 As we can see, each pod will maintain the same volume, and the image list will remain the same as before scaling down. The drawback is that we cannot retrieve the whole dataset. So if we have 10 data and 3 replicas, 2 of them might be on the first volume, 5 on the second, and the rest on the third. However, there is no straightforward way to obtain all 10 data points.
 

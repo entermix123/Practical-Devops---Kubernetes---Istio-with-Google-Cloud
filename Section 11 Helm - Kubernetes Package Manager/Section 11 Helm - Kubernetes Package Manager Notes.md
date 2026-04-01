@@ -24,18 +24,23 @@ Start minikube tunnel and don't close the terminal
     bash --> minikube tunnel
 
 ## 40 Introducing Helm
+
 [⬆ Back to top](#top)
 
 A more complex application requires multiple Docker containers working together. Consider a WordPress application that requires MySQL to be functional. So we need to install the MySQL and WordPress containers and configure them to work together. Seems familiar? It requires container orchestration. We already saw the demo on Docker Compose. Kubernetes is a more powerful orchestrator compared to Docker Compose. Remember, in Kubernetes, we can have multiple containers in a pod, which works as a single entity. Multiple containers across multiple pods might act together as a complex system. It is a powerful feature, but installing and configuring pods to work together can be tedious. Fortunately, there is Helm. Helm is a package manager for Kubernetes that makes it easier to find, use, and even share applications. Helm helps us a lot with installing, configuring, and managing applications in a Kubernetes cluster.
 
 We saw thisdiagram when we learned about Docker. 
 
-![Docker Diagram](pics/docker-diagram.jpg)
+<img src="pics/docker-diagram.jpg" width="1000" />
+<br>
+<br>
 
 
 Helm also contains three nodes with similar functionality, using a different term.  Helm package application using a Helm chart. A Helm chart contains all Kubernetes resources required to run applications. Think of a chart as equivalent to a Linux package manager (such as APT) or Windows (such as Chocolatey). Helm charts are stored and shared using a Helm repository. When we need to install something, we can find the chart repository. We can use the public Helm repository, usually known as the Helm stable repository. Some providers might host their own repository. We can even easily host a Helm repository. When we run a Helm chart inside a Kubernetes cluster, we create a release. For example, when we run two WordPress Helm charts on a Kubernetes cluster, it means we have two WordPress releases. Notice that there is no connection between release and repository. Behind the scenes, Helm is a Kubernetes application resource, and the application is a container pulled from the Docker repository, not the Helm chart repository.
 
-![Helm Diagram](pics/helm-diagram.jpg)
+<img src="pics/helm-diagram.jpg" width="1000" />
+<br>
+<br>
 
 To start using Helm, we need to install it - https://helm.sh/docs/v2/using_helm/install/. Go to the Helm website and follow the installation guide. The easiest way is to use an Operating system package manager, such as Brew on Mac or Chocolatey on Windows. Helm also provides a binary installation guide. The installation is straightforward, as explained in the documentation. When finished, check the installation by typing "helm version" in the terminal.
 
@@ -209,6 +214,7 @@ Check that the HAProxy service is now available.
 
 
 ## 41 Nginx Ingress Controller Retirement
+
 [⬆ Back to top](#top)
 
 The Nginx Ingress Controller is officially retired in early 2026 and will no longer be updated, including no security patches. However, Nginx was very popular and widely used, so companies might take some time to migrate away from it. The migration might target the gateway API or the ingress controller from another provider, such as HAProxy or Traefik.
@@ -859,8 +865,8 @@ Delete the ingress rules
 [⬆ Back to top](#top)
 
 
-
 ## 42 Gateway API Theory
+
 [⬆ Back to top](#top)
 
 Ingress controllers provide a centralized way to manage external access to services running in a Kubernetes cluster, primarily focusing on HTTP and HTTPS traffic at Layer 7 of the network. However, the Ingress controller has several limitations. It only covers HTTP or HTTPS traffic, with basic features such as TLS termination and simple content-based routing. It relies heavily on annotations for extensibility. This annotation-based approach has created significant problems. Each Ingress controller implementation uses its own vendor-specific annotations, making it difficult or impossible to switch between controllers. Advanced features like traffic splitting also require custom annotations that vary by provider, and are not always supported by a particular provider. 
@@ -882,6 +888,7 @@ The recommendation to migrate becomes a strong candidate in these scenarios. Our
 
 
 ## 43 Gateway API Hands On
+
 [⬆ Back to top](#top)
 
 Nginx is a high-performance web server and reverse proxy widely used for traffic routing, load balancing, and TLS termination. It is developed and maintained by a company named F5, which also provides multiple Kubernetes networking solutions built on top of the Nginx core. In Kubernetes, F5 offers two different products: Nginx Ingress Controller and Nginx Gateway Fabric. While both use Nginx under the hood, they target different Kubernetes APIs and serve different purposes. 
@@ -1653,6 +1660,7 @@ Delete the HTTP route.
 
 
 ## 44 Gateway API Traffic Management
+
 [⬆ Back to top](#top)
 
 The Gateway API provides built-in traffic management capabilities. All compliant Gateway API implementations enable fine-grained control over how requests flow through the backend. These features are standardized and remain consistent across implementations. This standardization means we can use traffic management across any gateway API implementation without relying on provider-specific extensions. There are several capabilities provided. 
@@ -1670,6 +1678,7 @@ Before continuing, ensure you have cleaned up resources from previous lessons, p
     # result: namespace "devops" deleted
 
 ### Deploy Resources
+
 [⬆ Back to top](#top)
 
 Navigate to the Kubernetes script for the course in the Gateway API traffic management folder. See the file devops-gateway-api-app.yml. This deployment file provides two blue application instances with different versions. One instance uses the image version 2.0.0, and the other uses 2.0.1. We then expose each pod using a cluster IP service.
@@ -1722,6 +1731,7 @@ Apply this file.
     gateway.gateway.networking.k8s.io/devops-gateway created
 
 ### method matching URLs
+
 [⬆ Back to top](#top)
 
 See the file gateway-api-http-method-matching.yml. This configuration defines HTTP routing rules for the devops-gateway gateway we just created. The HTTPRoute focuses on HTTP method–based routing for requests targeting the same URL path. Two routing rules are defined for requests whose path starts with /devops/blue. The first rule explicitly matches GET and POST requests with the path prefix /devops/blue. Any request that satisfies both the path and method conditions is forwarded to the Cluster IP service for the application version 2.0.0 on port 8111. Thus, the GET and POST traffic is to be served by version 2.0.0 of the application. For any other HTTP methods (such as PUT, DELETE, or PATCH) targeting /devops/blue will be routed to the Cluster IP service for the application version 2.0.1. Gateway API evaluates rules in order. Thus, the second rule applies only when the earlier method-specific matches do not.
@@ -1876,6 +1886,7 @@ Delete the HTTP route.
     httproute.gateway.networking.k8s.io "devops-blue-http-method-matching" deleted from devops namespace
 
 ### method matching parameter
+
 [⬆ Back to top](#top)
 
 See the file gateway-api-query-parameter-matching.yml. This configuration defines query parameter–based routing. The first rule matches requests with the path prefix devopsblue and a query parameter named shape whose value is circle, eclipse, or oval. Any request that satisfies the path condition and includes one of these query parameter values is routed to version 2.0.0 of the application. The second rule matches any other request to /devops/blue that does not meet the query-parameter conditions in the first rule and forwards traffic to version 2.0.1 of the application. 
@@ -1975,6 +1986,7 @@ Delete the HTTP route.
     httproute.gateway.networking.k8s.io "devops-blue-query-parameter-matching" deleted from devops namespace
 
 ### method header modifier
+
 [⬆ Back to top](#top)
 
 See the file gateway-api-request-header-modifier.yml. This configuration demonstrates request header manipulation. The route defines a single routing rule that matches all requests whose path starts with /devops/blue. Any request matching this path prefix is forwarded to the backend service version 2.0.0. However, before the request is sent to the backend, a Request Header Modifier filter is applied. Using this filter, the Gateway API modifies HTTP request headers in three ways, as defined in the configuration.
@@ -2067,6 +2079,7 @@ Delete the HTTP route.
     httproute.gateway.networking.k8s.io "devops-blue-header-modifier" deleted from devops namespace
 
 ### method mirroring
+
 [⬆ Back to top](#top)
 
 See the file gateway-api-request-mirroring.yml. The configuration focuses on request mirroring for traffic targeting the /devops/blue path. A single routing rule is defined for requests whose path starts with /devops/blue. All matching requests are normally forwarded to the primary backend, which is the ClusterIP service for application version 2.0.0. In addition to the primary forwarding behavior, this route applies a RequestMirror filter. The filter creates a copy of each incoming request and sends that mirrored request to a secondary backend the application version 2.0.1. The mirrored request is sent in parallel and does not affect the response returned to the client. As a result, clients always receive responses from version 2.0.0, while version 2.0.1 receives the same traffic passively for testing, validation, logging, or performance analysis. This approach allows you to observe real production traffic on a new version of the application without exposing it directly to users.
@@ -2165,6 +2178,7 @@ Delete the route.
     httproute.gateway.networking.k8s.io "devops-blue-request-mirroring" deleted from devops namespace
 
 ### method traffic splitting
+
 [⬆ Back to top](#top)
 
 See the file gateway-api-traffic-splitting.yml. This configuration focuses on traffic splitting between multiple backend services for requests targeting the same URL path. A single routing rule is defined for requests whose path starts with devopsblue. All requests that match this path are distributed across two backend services. The first backend points to application version 2.0.0 and is assigned a weight of 30. The second backend points to application version 2.0.1 and is assigned a weight of 70. The Gateway API uses these weights to distribute incoming traffic, meaning approximately 30% of requests are routed to version 2.0.0, and 70% to version 2.0.1.
@@ -2209,11 +2223,15 @@ Postman Collection / Gateway API traffic Management / Run
     - Run Configuration / Iterations: 100       
     - Run       
 
-![Traffic Splitting Settings](pics/traffic-splitting-settings.jpg)
+<img src="pics/traffic-splitting-settings.jpg" width="1200" />
+<br>
+<br>
 
 Result:
 
-![Traffic Splitting Results](pics/traffic-splitting.jpg)
+<img src="pics/traffic-splitting.jpg" width="1000" />
+<br>
+<br>
     
 
 Delete the route.
@@ -2228,6 +2246,7 @@ Delete the route.
 
 
 ## 45 Sealed Secret
+
 [⬆ Back to top](#top)
 
 There are times when we need to share or upload a configuration to a version control system like git. But as we have seen, both Kubernetes configmap and secret are just plain formats. If we put the database password into a secret, base64-encode it and upload it to version control for a reason, then anybody who has access to that file will know the database password. There is a way to encrypt Kubernetes secrets, but it is not a built-in Kubernetes feature. For example, we can use the Bitnami product named Sealed Secrets to encrypt the Kubernetes secret so that it can be safely shared. Notice, however, that Kubernetes will eventually decrypt the secret and store it back as a base64-encoded Kubernetes secret. So everyone who has access to a Kubernetes cluster and can read the secret still reads the plain value. But we can safely share the sealed secret file. 
@@ -2237,6 +2256,7 @@ This lesson is the demonstration flow for using sealed secrets. We have the plai
 <img src="pics/sealed-secret-example.jpg" width="1000" />
 <br>
 <br>
+
 First, we need to install the sealed secret into the Kubernetes cluster. We will install it using Helm. See the syntax in the course resources and references to install. 
 
     CMD --> helm upgrade --install sealed-secrets sealed-secrets --set-string fullnameOverride=sealed-secrets-controller --repo https://bitnami-labs.github.io/sealed-secrets --namespace kube-system
@@ -2614,8 +2634,9 @@ Postman Collection / Configmap / Secret / HTML sealed secret
 
 Click Preview tab to see the secret
 
-![Sealed Secret Postman](pics/sealed-secret-preview.jpg)
-
+<img src="pics/sealed-secret-preview.jpg" width="1400" />
+<br>
+<br>
 
 Delete the resources
 

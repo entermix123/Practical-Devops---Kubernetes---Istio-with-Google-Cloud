@@ -288,32 +288,35 @@ Search and install Grafana Dashboard - https://grafana.com/grafana/dashboards/
     - find dashboard 'haproxy ingress' - https://grafana.com/grafana/dashboards/12056-haproxy-ingress/      
     - copy the dashboard ID and import it in grafana
 
-<img src="pics/haproxy-ingress-dashboard.png" width="1000" />
+<img src="pics/haproxy-ingress-dashboard.png" width="1200" />
 <br>
 <br>
+
 Open grafana at http://localhost/grafana and login with     
     - username: admin       
     - password: changeme        
 
 Import the dashboard into grafana
 
-<img src="pics/import-dashboard-grafana.png" width="1400" />
+<img src="pics/import-dashboard-grafana.png" width="1600" />
 <br>
 <br>
+
 <img src="pics/import-dashboard-grafana-2.png" width="800" />
 <br>
 <br>
+
 <img src="pics/import-dashboard-grafana-3.png" width="800" />
 <br>
 <br>
 Open Postman Collection / Ingress - Monitoring and run the collection many times to create metrics
 
-<img src="pics/postman-run-collection.png" width="1200" />
+<img src="pics/postman-run-collection.png" width="1400" />
 <br>
 <br>
 Wait few minutes and open grafana haproxy dashboard and check the presented data
 
-<img src="pics/grafana-result.png" width="1400" />
+<img src="pics/grafana-result.png" width="1600" />
 <br>
 <br>
 
@@ -322,6 +325,7 @@ Wait few minutes and open grafana haproxy dashboard and check the presented data
 
 
 ## 47 Kube Prometheus Stack
+
 [⬆ Back to top](#top)
 
 To see more visualized, historical resource usages, we can use more tools. A common free tool for this is Prometheus. Prometheus is commonly combined with Grafana as a visualization dashboard. The Prometheus community already provides Helm installations for those stacks, which include a custom dashboard. To do this, we will install the kube-prometheus-stack Helm chart. Please ensure that Helm, Ingress, and the Metrics Server are already running on your cluster.
@@ -592,17 +596,20 @@ Login to grafana - http://localhost/grafana/
  
  Grafana can also send an alert when a metric value exceeds a threshold, but we will not discuss it here. However, for a Spring Boot application, the built-in Kube Prometheus dashboard does not accurately describe Java metrics. For example of a Java dashboard, let's import dashboard 11955 to show Java Virtual Machine Metrics.
 
-<img src="pics/import-dashboard-11955.png" width="800" />
+<img src="pics/import-dashboard-11955.png" width="1000" />
 <br>
 <br>
+
 <img src="pics/import-dashboard-11955-2.png" width="800" />
 <br>
 <br>
+
 Open the Postman collection and try to run a fake load. I will run CPU load on blue for 2 minutes. Also, a memory load on blue for 2 minutes.
 
-<img src="pics/running-load.png" width="1400" />
+<img src="pics/running-load.png" width="1600" />
 <br>
 <br>
+
 Open the Java dashboard in Grafana and see that memory and CPU usage change over time. 
 
 Delete the previous minikube 
@@ -614,6 +621,7 @@ Delete the previous minikube
 
 
 ## 48 HAProxy via Prometheus
+
 [⬆ Back to top](#top)
 
 Start fresh Minikube cluster
@@ -850,41 +858,47 @@ Try to access Prometheus at http://localhost/prometheus/targets.
 
 Make sure that there are HAProxy metrics here.
 
-<img src="pics/prometheus-metric.png" width="1400" />
+<img src="pics/prometheus-metric.png" width="1600" />
 <br>
 <br>
+
 To visualize, we can use Grafana. As open-source monitoring, the Grafana community provides many dashboards. Try searching "grafana dashboard" online and go to this link. Find the dashboard for HAPRoxy ingress. Import the dashboards into Grafana. We can copy the dashboard ID from the website and paste the ID into Grafana.
 
 Search and install Grafana Dashboard - https://grafana.com/grafana/dashboards/      
     - find dashboard 'haproxy ingress' - https://grafana.com/grafana/dashboards/12056-haproxy-ingress/      
     - copy the dashboard ID and import it in grafana
 
-<img src="pics/haproxy-ingress-dashboard.png" width="1200" />
+<img src="pics/haproxy-ingress-dashboard.png" width="1000" />
 <br>
 <br>
+
 Open grafana at http://localhost/grafana and login with     
     - username: admin       
     - password: changeme        
 
 Import the dashboard into grafana
 
-<img src="pics/import-dashboard-grafana.png" width="1400" />
+<img src="pics/import-dashboard-grafana.png" width="1600" />
 <br>
 <br>
+
 <img src="pics/import-dashboard-grafana-2.png" width="800" />
 <br>
 <br>
+
 <img src="pics/import-dashboard-grafana-3.png" width="800" />
 <br>
 <br>
 Open Postman Collection / Ingress - Monitoring and run the collection many times to create metrics
 
-<img src="pics/postman-run-collection.png" width="1200" />
+<img src="pics/postman-run-collection.png" width="1400" />
 <br>
 <br>
+
 Wait few minutes and open grafana haproxy dashboard and check the presented data
 
-<img src="pics/grafana-result.png" width="1400" />
+<img src="pics/grafana-result.png" width="1600" />
 <br>
 <br>
+
 [⬆ Back to top](#top)

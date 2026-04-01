@@ -1,4 +1,4 @@
-# 10 Exposing Kubernetes Pod
+# Section 10 Exposing Kubernetes Pod
 
 ## Content
 - 37 [Service](#37-service)
@@ -15,6 +15,7 @@ Start minikube tunnel and don't close the terminal
     bash --> minikube tunnel
 
 ## 37 Service
+
 [⬆ Back to top](#top)
 
 So far, we have used a load balancer service to expose pod functionality. A load balancer is one type of Kubernetes service that exposes pod functionality to the outside Kubernetes world. Kubernetes also provides several other service types. We saw the node port at the very beginning of the hands-on, where we exposed the Hello World application.
@@ -22,13 +23,22 @@ So far, we have used a load balancer service to expose pod functionality. A load
 Kubernetes also provides the ClusterIP service type, which exposes the pod only to the internal cluster, not to the outside world. A ClusterIP is the default type when creating a service. 
 
 We have already seen a load balancer, but here is more detail. We have two applications, one blue and one yellow, each with two replicas distributed across three worker nodes. We can create a load balancer blue for the blue application. and load balancer yellow for the yellow application. We have a client outside the Kubernetes cluster. The client will access via the load balancer's external IP address. Mind the keyword 'external'. We will see it later on the demo. Consequently, in real life, we need to reserve IP addresses for the load balancer, and if we use the cloud, this might incur a cost. A load balancer can use a low port number, including the standard HTTP port 80. Note that we can also use port 443, but it doesn't mean the load balancer will automatically use a TLS certificate. Each load balancer can use multiple ports that expose the pod behind it. See the load balancer node in this diagram, which has two open ports.
-![Load Balancer](pics/load-balancer.jpg)
+
+<img src="pics/load-balancer.jpg" width="1200" />
+<br>
+<br>
 
 NodePort is a simpler version of a load balancer. On a single worker node, we cannot see the difference, but on multi-worker nodes, this is what happens. While in the load balancer, clients access through the load balancer IP address, On nodeport, the client accesses nodeport via the worker IP address. In this sample, the blue node port exposes port 30111, so the client can access using one of the black IPs: 10.100.89.1, 2, or 3 and port 30111. And so does the yellow node port, which can be accessed using one of the black IP addresses on port 30112. Using a node port means we access the worker node IP address, and does not need a dedicated IP address for the node port. By default, node ports can only be assigned a high port in this range. We can assign the port or let Kubernetes automatically assign a free port in this range. One node port cannot have more than one port assigned. This behavior might be good for local development. Still, in practice, node ports are not suitable because we need to maintain an IP address and a port that can be automatically assigned.
-![Node Port](pics/node-port.jpg)
+
+<img src="pics/node-port.jpg" width="1200" />
+<br>
+<br>
 
 Cluster IP is the default service type if none is written in the service configuration. Cluster IP is only meant for internal access within the cluster, so the client cannot connect to the cluster IP service. If, for debugging purposes, a client must connect to the cluster IP, It can still be done using kubectl proxy. But this is only for debugging, not suitable for real transactions. The important point here is that cluster IP is meant only for exposing the service internally within the cluster, not for external clients. Accessing via kubectl proxy is possible, but the URL will be long and include the proxy endpoint.
-![Cluster IP](pics/cluster-ip.jpg)
+
+<img src="pics/cluster-ip.jpg" width="1200" />
+<br>
+<br>
 
 In the next video, we will see a sample of all three service types. We will have two containers: 
 - devops blue running on port 8111, and 
@@ -410,18 +420,28 @@ Let's delete the service so we can start fresh with the next type.
 
 
 ## 38 Ingress Controller
+
 [⬆ Back to top](#top)
 
 We saw this diagram when using a load balancer. This diagram shows how we expose the pod to the outer Kubernetes world. In reality, we will have a lot of services to be exposed, Which means a lot of load balancers. And if we use the cloud, that means reserving many IP addresses, which may require payment, and the domain name must also be maintained.
-![Load Balancer](pics/load-balancer-2.jpg)
+
+<img src="pics/load-balancer-2.jpg" width="1200" />
+<br>
+<br>
 
 What if we have something that can be used as a single IP address, meaning a single URL endpoint that can access any pod? We can add a URL path after the domain, and it will redirect traffic to the correct pod. Meet ingress, which is exactly what it's used for. Well, actually, not only the ingress. An ingress in Kubernetes is like a rulebook for defining traffic routing. The ingress controller implements the rules and redirects traffic accordingly. The client actually accesses the ingress controller. Ingress and ingress controller are not Kubernetes services. They are traffic controllers. It actually redirects traffic to the service, based on a set of rules, For example, using a path. The service can be any type: ClusterIP, NodePort, or even a load balancer. The service will connect to the pod, as we have learned. In practice, we usually use a cluster IP service, as the ingress and the ingress controller handle external exposure.
-![Ingress](pics/ingress.jpg)
+
+<img src="pics/ingress.jpg" width="1200" />
+<br>
+<br>
 
 Ingress is a set of rules defined as a Kubernetes object via a configuration file. The ingress controller is a separate component that needs to be installed. An ingress controller is basically a load balancer, but with a set of rules that make it more powerful than the built-in Kubernetes load balancer. For example, we can use an Nginx Ingress Controller or a cloud-specific Ingress Controller. In addition, several providers offer ingress controller products. 
 
 In the next demo, we will learn this. We have two services, and we will write ingress rules so that the ingress controller routes traffic based on the client's URL path. We will use the Nginx Ingress Controller. Since everything in this demo is on localhost, we might not be able to see the real power of the ingress controller, but the concept should be clear.
-![Ingress Demo](pics/ingress-demo.jpg)
+
+<img src="pics/ingress-demo.jpg" width="1200" />
+<br>
+<br>
 
 The demo will create four pods in total. Please wait around 1 to 2 minutes until all pods are ready. Depending on your laptop's resources, it might take longer for the pod to be ready. If your laptop is low on CPU or memory, the pod might not even be ready. On folder ingress, you can reduce the replica count to 1, which requires fewer resources.
 
@@ -599,10 +619,16 @@ Since we already defined the ingress, we can try it. Open the Postman collection
     Version [2.0.0] Hello from app [devops-yellow running at 10.244.0.65] on k8s pod [devops-ingress-yellow-deployment-79657dbd7c-xrg4j]
 
 If we add configuration using an annotation, the configuration should already be applied. For example, open the delay endpoint. This delay endpoint will simulate a long process that takes seconds on the input parameter.
-![Delay Blue App](pics/delay-blue-postman.jpg)
+
+<img src="pics/delay-blue-postman.jpg" width="1400" />
+<br>
+<br>
 
 Since we configure an 8-second delay, when we hit the delay endpoint with a parameter greater than 8, we will get a gateway timeout. It's not exactly at second 9 that we get a response. There will be additional time from nginx, but it will return a gateway timeout status. 
-![Delay Blue App 2](pics/delay-blue-postman-2.jpg)
+
+<img src="pics/delay-blue-postman-2.jpg" width="1400" />
+<br>
+<br>
 
 Remove the ingress to start fresh.
 
@@ -678,20 +704,32 @@ Remove the ingress to startfresh.
     # result: ingress.networking.k8s.io "devops-ingress-nginx" deleted from devops namespace
 
 In most applications, we use a readable domain (the light pink part) instead of the numerical IP address. The Domain Name System is responsible for translating a domain name into a matching IP address. In practice, we will find cases where we have several backends, each with its own domain name, and users access them through the domain name, most of the time via a subdomain. We can even use a single domain name, with paths routed seamlessly to different backends. This behavior can be achieved using an ingress controller. But first, we must know a few things. 
-![Ingress Architecture](pics/service-architecture.jpg)
+
+<img src="pics/service-architecture.jpg" width="1000" />
+<br>
+<br>
 
 In this sample,'API' is a subdomain, and domain.com isthe domain. This address is human-readable, but computers need to know the exact IP address for routing traffic. The Domain Name System (DNS) translates readable domain names into IP addresses, enabling traffic to be routed to the correct destination. On the internet, we can use many DNS providers, like Google Cloud DNS or AWS Route 53. Locally, for development purposes, we can use a hosts file to simulate DNS. In Windows, this is the host file. On Linux or macOS, this is the hosts file. Either the actual DNS or the host file will contain an entry that maps a human-readable address into an IP address. For the next lesson, we will simulate DNS using a local host file.
-![Host Routing](pics/routing-by-host.jpg)
+
+<img src="pics/routing-by-host.jpg" width="600" />
+<br>
+<br>
 
 In this course, we will use several domain names, although all point to the same local IP address. Please set these host names on your laptop. 
-![Host Required](pics/required-hosts.jpg)
+
+<img src="pics/required-hosts.jpg" width="600" />
+<br>
+<br>
 
 When an application forwards an HTTP request, behind the scenes, it will contain the Host request header, which specifies the host and port number of the server to which the request is being sent. 
 
 So if we send a request to this URL, the host header will contain this. This mechanism can later be used to achieve our goal. 
 
 This is what we will create in the next video. We will have two domains: blue.devops.local and yellow.devops.local. Since we use localhost, we will edit the hosts file to map those domains to the local IP 127.0.0.1. Then, based on the domain, we will redirect traffic to the correct service.
-![Architecture example 1](pics/ingress-arch-1.jpg)
+
+<img src="pics/ingress-arch-1.jpg" width="1200" />
+<br>
+<br>
 
 First, add an entry to the hosts file. I use Windows so that I will edit this file. We need to edit as an administrator. Then add this entry. [ 127.0.0.1 blue.devops.local 127.0.0.1 yellow.devops.local ] 
 
@@ -869,7 +907,10 @@ Delete this rule.
     ingress.networking.k8s.io "devops-ingress-nginx-host-yellow" deleted from devops namespace
 
 This is what we will create in the next video. We will have one domain: api.devops.local. We will edit the hosts file to map the host to the local IP address using 127.0.0.1. Then, based on the path after the domain, we will redirect traffic to the correct service. So the 'slash blue' is to blue service, and the 'slash yellow' is to yellowservice.
-![Architecture example 2](pics/ingress-arch-2.jpg)
+
+<img src="pics/ingress-arch-2.jpg" width="1200" />
+<br>
+<br>
 
 Add another entry to the hosts file. Add host address to Windows host list
 - Open PowerShell as Admin
@@ -1025,6 +1066,7 @@ Deletethis rule. And delete the deployment.
 
 
 ## 39 Ingress Over TLS
+
 [⬆ Back to top](#top)
 
 In practice, we secure traffic using HTTPS, an HTTP protocol that encrypts and secures web traffic using TLS (Transport Layer Security). We can easily set a TLS certificate on the Kubernetes ingress. We need a TLS certificate. In reality, such a certificate is issued by a trusted certificate authority. Locally, we can generate a self-signed TLS certificate. Note that most apps do not trust self-signed certificates. Thus, if we use Postman or a browser, we need to turn off validation later. To generate a self-signed certificate, we can use OpenSSL or online tools. Check the link to the course resources and references.

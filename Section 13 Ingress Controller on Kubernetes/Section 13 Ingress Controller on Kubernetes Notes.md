@@ -44,7 +44,9 @@ Ingress plays a vital role in practice. We have already seen how to create and c
 
 We will have HAProxy as an ingress controller. In this sample, we will add a request header and a response header to each traffic. We will create rules for a specific single host using the HTTPS protocol. Based on the path, we will redirect traffic to the yellow or blue pod. So we have two ingress, each with a different rule. We can add HAProxy annotations to each ingress to specify rules that apply only to that ingress. For example, we will redirect any traffic that goes to yellow, so every time we access the yellow ingress, we will be redirected to the Google website. In blue, we will set a rate limit of 30 hits per minute for any endpoint. We will also add the HSTS response header, which is usually used for security. HAProxy has more configuration. You can find the complete configuration in the HAProxy documentation.
 
-<img src="pics/ingress-combination-architecture.png" width="900" />
+<img src="pics/ingress-combination-architecture.png" width="1200" />
+<br>
+<br>
 
 Go to the ingress-combination folder. First, see the deployment file - ingress-combination-deployment.yml. Nothing specialâ€”we will deploy a blue and a yellow pod, along with the cluster IP service.
 
@@ -268,18 +270,25 @@ Postman Collection / Ingress Combination / GET Hello Blue
 
 See the response header. It includes a Strict-Transport-Security (HSTS) header.
 
-<img src="pics/postman-strict-headers.png" width="1200" />
-
+<img src="pics/postman-strict-headers.png" width="1400" />
+<br>
+<br>
 
 Also, if we run this endpoint multiple times, it will only receive 30 requests per minute. Well, maybe not exactly 30, but on 31 or 32. Try it. Run 50 times without delay, and we will see that, around request 31, it will be rejected with a 429 status code, as defined in the ingress configuration. 
 
-<img src="pics/multiple-postman-runs-blue-app.png" width="1600" />
+<img src="pics/multiple-postman-runs-blue-app.png" width="1400" />
+<br>
+<br>
 
-<img src="pics/multiple-postman-runs-blue-app-result.png" width="1200" />
+<img src="pics/multiple-postman-runs-blue-app-result.png" width="1400" />
+<br>
+<br>
 
 On the yellow API, if we hit it, we will be redirected to the Google page. For details, I will turn off Postman's automatic follow-redirect.
 
 <img src="pics/postman-redirect-settings-disabled.png" width="800" />
+<br>
+<br>
 
 When we hit the yellow endpoint, we will get a status code 302 (temporary redirect). In the response header, we will get the redirect URL to Google.
 
@@ -288,6 +297,8 @@ Postman Collection / Ingress Combination / GET Hello Yellow
     - address: https://api.devops.local/devops/yellow/api/hello
   
 <img src="pics/yellow-app-google-redirect.png" width="1400" />
+<br>
+<br>
 
 Run the blue echo endpoint.
 
@@ -297,6 +308,8 @@ Postman Collection / Ingress Combination / GET Echo Blue
 See here: we got a new request header on the backend, as defined in the ingress configuration. Also, if we check the response headers, we will receive the custom response header defined in the previous ingress configuration. 
 
 <img src="pics/blue-echo-app-result.png" width="1400" />
+<br>
+<br>
 
 What about the yellow echo endpoint?
 
@@ -306,7 +319,8 @@ Postman Collection / Ingress Combination / GET Echo Yellow
 Make sure that the Postman follow redirect is off, and run the yellow echo. Since we define that everything that goes to yellow will be redirected to the Google website, we do not receive an echo response body; instead, we receive a 302 redirect status.
 
 <img src="pics/yellow-echo-app-result.png" width="1400" />
-
+<br>
+<br>
 
 [⬆ Back to top](#top)
 
