@@ -1,0 +1,14 @@
+spring-boot-rest-api:
+  autoscaling:
+    enabled: false
+  ingress:
+    annotations: 
+      haproxy.org/rate-limit-period: 1m
+      haproxy.org/rate-limit-requests: "10"
+      haproxy.org/rate-limit-status-code: "429"
+
+redis:
+  replica:
+    replicaCount: 1
+    autoscaling:
+      enabled: false

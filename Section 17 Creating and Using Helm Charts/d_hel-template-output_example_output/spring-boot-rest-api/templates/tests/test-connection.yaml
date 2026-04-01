@@ -1,0 +1,21 @@
+---
+# Source: spring-boot-rest-api/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "helm-yellow-01-spring-boot-rest-api-test-connection"
+  labels:
+    helm.sh/chart: spring-boot-rest-api-0.1.0
+    app.kubernetes.io/name: spring-boot-rest-api
+    app.kubernetes.io/instance: helm-yellow-01
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['helm-yellow-01-spring-boot-rest-api:8112']
+  restartPolicy: Never

@@ -1,0 +1,77 @@
+# -------------------------------------------------------
+# For deployment
+image:
+  repository: timpamungkas/devops-yellow
+  tag: 2.0.0
+
+applicationPort: 8112
+
+actuatorPort: 8112
+
+prometheusPath: /devops/yellow/actuator/prometheus
+
+health:
+  liveness:
+    path: /devops/yellow/actuator/health/liveness
+  readiness:
+    path: /devops/yellow/actuator/health/readiness
+
+# Mind the | which indicates this is raw string
+extraVolumeMounts: |
+  - name: upload-image-empty-dir
+    mountPath: /upload/image
+  - name: upload-doc-empty-dir
+    mountPath: /upload/doc
+
+# Mind the | which indicates this is raw string
+extraVolumes: |
+  - name: upload-image-empty-dir
+    emptyDir: {}
+  - name: upload-doc-empty-dir
+    emptyDir: {}
+
+# -------------------------------------------------------
+# For service
+service:
+  type: ClusterIP
+  port: 8112
+
+# -------------------------------------------------------
+# For autoscaling
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+
+# -------------------------------------------------------
+# For gateway API
+# The gateway `devops-gateway` must already exists
+
+httpRoute:
+  enabled: true
+  annotations: {}
+  parentRefs:
+    - name: devops-gateway
+  hostnames:
+    - api.devops.local
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /devops/yellow
+      filters: []
+
+# -------------------------------------------------------
+# For ingress
+ingress:
+  enabled: false
+  className: haproxy
+  annotations: 
+    haproxy.org/rate-limit-period: 1m
+    haproxy.org/rate-limit-requests: "30"
+    haproxy.org/rate-limit-status-code: "429"
+  hosts:
+  - host: api.devops.local
+    paths:
+    - path: /devops/yellow
+      pathType: Prefix      

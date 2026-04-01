@@ -1,0 +1,28 @@
+env:
+  open:
+    STORAGE: local
+    DISABLE_API: false
+    CONTEXT_PATH: chartmuseum
+  existingSecret: chartmuseum-credential
+  existingSecretMappings:
+    BASIC_AUTH_USER: chartmuseum-username
+    BASIC_AUTH_PASS: chartmuseum-password
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 500Mi
+
+resources:
+  requests:
+  limits:
+    cpu: "0.4"
+    memory: 350M
+
+ingress:
+  enabled: "true"
+  ingressClassName: haproxy
+  pathType: Prefix
+  hosts:
+  - name: chartmuseum.local
+    path: /chartmuseum

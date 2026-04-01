@@ -1,0 +1,28 @@
+autoscaling:
+  enabled: false
+
+ingress:
+  annotations: 
+    haproxy.org/rate-limit-period: 1m
+    haproxy.org/rate-limit-requests: "10"
+    haproxy.org/rate-limit-status-code: "429"
+
+extraEnv: |
+  - name: DEVOPS_BLUE_HTML_BG_COLOR
+    value: "#dcecf2"
+  - name: DEVOPS_BLUE_HTML_TEXT_COLOR
+    value: "#000000"
+  - name: HARDCODED_ENVIRONMENT_VARIABLE
+    value: This is from values-dev.yml
+  - name: DEVOPS_BLUE_HTML_TEXT_ONE
+    value: This is from values-dev.yml
+  - name: DEVOPS_BLUE_HTML_TEXT_TWO
+    value: This is from values-dev.yml
+  - name: DEVOPS_BLUE_HTML_TEXT_THREE
+    value: This is from values-dev.yml
+  - name: DEVOPS_BLUE_HTML_TEXT_FOUR
+    value: This is from values-dev.yml
+  - name: DEVOPS_BLUE_HTML_TEXT_FIVE
+    value: This is from values-dev.yml
+  - name: DEVOPS_BLUE_HTML_TEXT_SIX
+    value: This is from values-dev.yml

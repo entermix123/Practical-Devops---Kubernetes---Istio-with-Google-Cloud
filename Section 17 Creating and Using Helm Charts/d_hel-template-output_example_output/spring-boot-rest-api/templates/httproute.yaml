@@ -1,0 +1,26 @@
+---
+# Source: spring-boot-rest-api/templates/httproute.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: helm-yellow-01-spring-boot-rest-api
+  labels:
+    helm.sh/chart: spring-boot-rest-api-0.1.0
+    app.kubernetes.io/name: spring-boot-rest-api
+    app.kubernetes.io/instance: helm-yellow-01
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  parentRefs:
+    - name: devops-gateway
+  hostnames:
+    - api.devops.local
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /devops/yellow
+      backendRefs:
+        - name: helm-yellow-01-spring-boot-rest-api
+          port: 8112
+          weight: 1

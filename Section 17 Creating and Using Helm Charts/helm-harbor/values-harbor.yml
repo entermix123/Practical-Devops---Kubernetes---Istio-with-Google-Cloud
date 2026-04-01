@@ -1,0 +1,30 @@
+expose:
+  type: ingress
+  ingress:
+    className: haproxy
+    hosts:
+      core: harbor.local    
+  tls:
+    enabled: true
+    certSource: secret
+    secret:
+      secretName: harbor-local-cert
+  
+externalURL: https://harbor.local
+
+harborAdminPassword: harbor12345
+
+persistence:
+  enabled: true
+  persistentVolumeClaim:
+    registry:
+      size: 100M
+
+chartmuseum:
+  enabled: false
+
+trivy:
+  enabled: false
+
+notary:
+  enabled: false

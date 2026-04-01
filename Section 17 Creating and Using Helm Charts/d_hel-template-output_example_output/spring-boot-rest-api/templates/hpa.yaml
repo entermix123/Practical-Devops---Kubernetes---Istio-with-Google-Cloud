@@ -1,0 +1,32 @@
+---
+# Source: spring-boot-rest-api/templates/hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: helm-yellow-01-spring-boot-rest-api
+  labels:
+    helm.sh/chart: spring-boot-rest-api-0.1.0
+    app.kubernetes.io/name: spring-boot-rest-api
+    app.kubernetes.io/instance: helm-yellow-01
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: helm-yellow-01-spring-boot-rest-api
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 75
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 75

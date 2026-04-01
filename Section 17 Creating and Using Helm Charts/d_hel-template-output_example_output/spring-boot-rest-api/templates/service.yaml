@@ -1,0 +1,22 @@
+---
+# Source: spring-boot-rest-api/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: helm-yellow-01-spring-boot-rest-api
+  labels:
+    helm.sh/chart: spring-boot-rest-api-0.1.0
+    app.kubernetes.io/name: spring-boot-rest-api
+    app.kubernetes.io/instance: helm-yellow-01
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8112
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: spring-boot-rest-api
+    app.kubernetes.io/instance: helm-yellow-01
