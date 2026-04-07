@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: ingress-devops-blue
+  labels:
+    app.kubernetes.io/name: devops-blue
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+spec:
+  ingressClassName: haproxy
+  rules:
+  - host: blue.devops.local
+    http:
+      paths:
+      - path: /devops/blue
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-blue-clusterip
+            port:
+              number: 8111
+  tls:
+    - hosts:
+      - blue.devops.local
+      secretName: my-devops-blue-cert
