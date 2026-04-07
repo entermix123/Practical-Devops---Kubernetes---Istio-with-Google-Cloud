@@ -1,0 +1,140 @@
+replicaCount: 1
+image:
+  pullPolicy: IfNotPresent
+  repository: ""
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+applicationPort: 8080
+actuatorPort: 8080
+prometheusPath: /actuator/prometheus
+
+deploymentLabels: {}
+
+deploymentAnnotations: {}
+
+podAnnotations: {}
+
+selectorLabels: {}
+
+health:
+  liveness:
+    port: 8080
+    path: /actuator/health/liveness
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 4
+  readiness:
+    port: 8080
+    path: /actuator/health/readiness
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 4
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 75
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+  tls: []
+       
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# environment variable
+extraEnv: {}
+
+containerSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 100000
+  runAsGroup: 100000
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+extraVolumes: {}
+
+size: "small"
+
+sizemap:
+  small:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 384Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    java-options: >-
+      -XX:+UseContainerSupport
+      -XX:MaxRAMPercentage=75.0
+      -Djava.net.preferIPv4Stack=true
+      -Djava.awt.headless=true
+  medium:
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 750m
+        memory: 768Mi
+    java-options: >-
+      -XX:+UseContainerSupport
+      -XX:MaxRAMPercentage=80.0
+      -Djava.net.preferIPv4Stack=true
+      -Djava.awt.headless=true
+  large:
+    resources:
+      requests:
+        cpu: 750m
+        memory: 768Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+    java-options: >-
+      -XX:+UseContainerSupport
+      -XX:MaxRAMPercentage=85.0
+      -Djava.net.preferIPv4Stack=true
+      -Djava.awt.headless=true
+  xlarge:
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 2Gi
+    java-options: >-
+      -XX:+UseContainerSupport
+      -XX:MaxRAMPercentage=90.0
+      -Djava.net.preferIPv4Stack=true
+      -Djava.awt.headless=true

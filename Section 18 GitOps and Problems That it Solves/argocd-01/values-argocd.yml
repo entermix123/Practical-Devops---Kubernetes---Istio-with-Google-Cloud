@@ -1,0 +1,49 @@
+configs:
+  secret:
+    # initial password : "password" (BCRYPT hash)
+    argocdServerAdminPassword: $2a$12$n4pjYaCeLFGvZcUhQ3.TYOm2cwUhFXxcAeXTBFdhxtsTKhRMMFfcq
+  params:
+    server.insecure: true
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: haproxy
+    hostname: argocd.local
+    annotations:
+      haproxy.org/server-proto: "h1"
+      haproxy.org/ssl-redirect: "true"
+    tls: true
+    extraTls:
+      - hosts:
+          - argocd.local
+        secretName: argocd-local-cert
+    paths:
+      - /
+    pathType: Prefix
+  resources:
+    requests:
+      cpu: "0.25"
+      memory: 200M
+    limits:
+      cpu: "0.4"
+      memory: 300M
+
+repoServer:
+  livenessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 5
+    periodSeconds: 30
+    failureThreshold: 3
+  readinessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 5
+    periodSeconds: 10
+    failureThreshold: 3
+  resources:
+    requests:
+      cpu: "0.1"
+      memory: 128M
+    limits:
+      cpu: "0.5"
+      memory: 400M      

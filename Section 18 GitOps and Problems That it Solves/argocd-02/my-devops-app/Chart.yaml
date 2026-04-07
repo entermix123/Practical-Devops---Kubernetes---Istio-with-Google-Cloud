@@ -1,0 +1,10 @@
+apiVersion: v2
+name: my-devops-chart
+type: application
+version: 2.0.0
+appVersion: 2.0.0
+dependencies:
+  - name: spring-boot-rest-api
+    version: 0.1.0
+    # Change with your own github repo (from lesson : Using github as helm repository)
+    repository: https://timpamungkas.github.io/devops-helm-charts/

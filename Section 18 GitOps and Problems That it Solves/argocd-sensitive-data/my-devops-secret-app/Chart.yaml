@@ -1,0 +1,9 @@
+apiVersion: v2
+name: my-devops-chart
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+dependencies:
+  - name: spring-boot-rest-api
+    version: 0.1.0
+    repository: https://entermix123.github.io/devops-helm-charts

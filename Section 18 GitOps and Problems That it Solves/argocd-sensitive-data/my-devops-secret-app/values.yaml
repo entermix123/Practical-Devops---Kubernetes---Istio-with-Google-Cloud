@@ -1,0 +1,46 @@
+spring-boot-rest-api:
+  applicationPort: 8111
+
+  actuatorPort: 8111
+
+  prometheusPath: /devops/blue/actuator/prometheus
+
+  health:
+    readiness:
+      path: /devops/blue/actuator/health/readiness
+      scheme: HTTP
+      initialDelaySeconds: 60
+      periodSeconds: 30
+      timeoutSeconds: 5
+      failureThreshold: 4
+    liveness:
+      path: /devops/blue/actuator/health/liveness
+      scheme: HTTP
+      initialDelaySeconds: 60
+      periodSeconds: 30
+      timeoutSeconds: 5
+      failureThreshold: 4
+
+  extraVolumeMounts: |
+    - name: upload-image-empty-dir
+      mountPath: /upload/image
+    - name: upload-doc-empty-dir
+      mountPath: /upload/doc
+
+  extraVolumes: |
+    - name: upload-image-empty-dir
+      emptyDir: {}
+    - name: upload-doc-empty-dir
+      emptyDir: {}
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: true
+    className: haproxy
+    hosts:
+      - paths:
+          - path: /devops/blue
+            pathType: Prefix

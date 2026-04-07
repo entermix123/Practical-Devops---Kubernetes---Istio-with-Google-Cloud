@@ -1,0 +1,11 @@
+sealed-secret:
+  namespace: devops               # Important!
+  sealedSecrets:
+    - name: devops-secret-blue    # Important!
+      annotations:
+        - sealedsecrets.bitnami.com/namespace-wide: "true"    # Important!
+      type: Opaque
+      values:
+        devops-blue-html-text-one: AgCLvjEEI34KgIZMJUQxESFZzTBy3iD++61to1sw8RDfCT1klL+m2faxYR94opOut/7OXKlS2M1RE1v7jr1pM0/u3R3UbyaOYyor9efg/V7Fv/ad7j+EByI+X3om9cNnd5BtdhzylNT9mRDQ/kShxFH3MATggOZrjp+Utb6+JNP8oFUXtRgB0LrBRmFcEYg4gezX4fLo2pHn0OmQ7fexoYQ6fxUIjrtTzOStDYhHQh3Qlmq40OiCqaZEKenb/EzoZO9+vxb6ZA1x4fh82AcxfFHquI/lb2c0ZnbDito3HQujAFgmepw8PJqrHlk8ABa1zbmH3H1xrcOg3rvHGjEXTf4BGwzxERt8cMxSC3aF5MaxlK8QudbgoNincjgDK/IG1asvf/EDMyRK+TnMWV+UMgw737yasTTwT6+5k7PCnfqHo9FahMDBHQ4ECUmJpm3xnjNuf50x2BlVJ++kE+/1oFILZpFPWkkwItR0HDT+1+63d2s19r5sOZDun40AO1bwMdvoV031sdMCRzH0+hIsBzrvN51TbbG2XsrI6iD9kNGxCDY6f6Ebw9Sr35XSUVubVvpfwSX0IQAvUSZO3ae8ICbgVW1D/kenNdkdzAIlBqyPW1s5oc8axUkrROd0kz/XP+/J8hfsPha5SKccgi5xw65aP2uOJffHTvDx9mJI8UAiKHmQN7zesLfj/I/XM7bvRdgcB5pY7QQavh09Zvh9drOiCTEdwFXk4sovjCpWAw==
+        devops-blue-html-text-two: AgAfsPfRv8OCSwQKLFF8YCSI4mkTcI1jy+8gLKA83kn+RGx967FNV+4UL1Jl7qvJ7xp1lhWYTevOXiYlPAlNFljZiKqEJrV0s7utYRMx3PMgRw1b3S16qC5/HD7dgfilGg5XQulVYvO1nmKjuD63x0QfMq/fd0A/CKWCpeKvaLvyxQeWjoC4bJpJwJoMLIAw2uvqinxTOwAVm/Q11CdXUXcRkNkeI0XWtdeZtIGllIPdH9b10yqAoehNO7+eqlJBA8z1PBIGVw9hIioivZOvMgAQZMtvXq+apNZULl1AMmQmlot8Sgv0YMmdFC8FGmmfiNrq6FcnpfCY0XvwBrMeWcul69vdFZLGEIINPxNvgM+Z3gZlf97MH5eIwPwc//nkeQlCQuZ8Ko7rA0nKUSfM3dmLD/NukpEL+AeQ/9rob5icAdVon7G39wJbK0fRpcCRAR7lX4vxK8j11aSKyRH/YG9sXZD66Gp+FByu1ciDM+WSKWGjHZZpRkpBNghjDesko1hRYDyvv/t7mPAqd7icKzmtiYYyf0zPktEF2q4jr8ZFfe6uayetyAGmsPzl7UeKaMD/qmL3i0BMBYS9y4fBbIJCDl4FFqiS8vCaLKhvWvAh8x9x4/kZCwM5L9BqCJBxVS/YvO6ngvBg8z4GpGP04ccz/39idHQA0EM05EMFC6kBWnPk8GZdXnISFipozlCGF8RiVXm2um4v8l2a2P8lVm5DyM5rT5gBVfQO/8MkXY5MgPR9yBN1DYhLh1O+E4MD0k2rxSw=
+        

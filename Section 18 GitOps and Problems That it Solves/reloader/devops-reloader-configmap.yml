@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  devops
+
+---
+
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  namespace: devops
+  name: devops-blue-configmap
+immutable: false
+data:
+  # html.color.background: "#F7E396"
+  # html.color.text: "#5C3E94"
+  # html.text.one: "Hello there, I am the first configmap"
+  # html.text.two: "Just another configmap (2nd)"
+  # html.text.three: "This is the THIRD text from k8s configmap"
+  html.color.background: "#0F828C"
+  html.color.text: "#FFCDC9"
+  html.text.one: "This is a NEW configmap value (1st)"
+  html.text.two: "Another NEW configmap value (2nd)"
+  html.text.three: "Don't forget the (3rd) NEW configmap value"  
