@@ -1,0 +1,32 @@
+auth:
+  strategy: token
+
+deployment:
+  ingress:
+    enabled: true
+    class_name: haproxy
+  resources:
+    limits:
+      cpu: "0.3"
+      memory: 512Mi
+
+external_services:
+  prometheus:
+    url: http://kube-prometheus-stack-prometheus.istio-system:9090/prometheus
+    internal_url: http://kube-prometheus-stack-prometheus.istio-system:9090/prometheus
+    external_url: http://127.0.0.1/prometheus
+    health_check_url: http://kube-prometheus-stack-prometheus.istio-system:9090/prometheus/-/healthy
+  tracing:
+    enabled: false
+    internal_url: http://jaeger-simple-query.istio-system:16686/jaeger
+    external_url: http://127.0.0.1/jaeger
+    use_grpc: false
+  grafana:
+    enabled: true
+    internal_url: http://kube-prometheus-stack-grafana.istio-system/grafana
+    external_url: http://127.0.0.1/grafana
+    health_check_url: http://kube-prometheus-stack-grafana.istio-system/grafana/api/health
+    auth:
+      type: basic
+      username: admin
+      password: changeme
