@@ -1,0 +1,3377 @@
+{
+  "info": {
+    "_postman_id": "47d3e626-ba1c-4b0a-b2ac-a71aebae8f0b",
+    "name": "DevOps - Kubernetes & Istio",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "3610568"
+  },
+  "item": [
+    {
+      "name": "Health check",
+      "item": [
+        {
+          "name": "Hello Blue (via Load Balancer)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Shutdown Blue Pod",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9111/devops/blue/actuator/shutdown",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9111",
+              "path": [
+                "devops",
+                "blue",
+                "actuator",
+                "shutdown"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Log",
+      "item": [
+        {
+          "name": "Log",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/api/log?text={{$randomFirstName}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "log"
+              ],
+              "query": [
+                {
+                  "key": "text",
+                  "value": "{{$randomFirstName}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Exception",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/api/exception",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "exception"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Random Status (Blue)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://blue.devops.local/devops/blue/api/status/:response-status-code",
+              "protocol": "http",
+              "host": [
+                "blue",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "status",
+                ":response-status-code"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "random"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2xx Status (Blue)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://blue.devops.local/devops/blue/api/status/:response-status-code",
+              "protocol": "http",
+              "host": [
+                "blue",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "status",
+                ":response-status-code"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Volume",
+      "item": [
+        {
+          "name": "Upload image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/api/image",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "image"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload doc",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/api/doc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "doc"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/api/images",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "images"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List doc",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/api/docs",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "docs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Load image",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/api/image/:image-id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "image",
+                ":image-id"
+              ],
+              "variable": [
+                {
+                  "key": "image-id",
+                  "value": "c65e3d95-d780-43eb-90c2-bf41a6e0b74f"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Load doc",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/api/doc/:doc-id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "doc",
+                ":doc-id"
+              ],
+              "variable": [
+                {
+                  "key": "doc-id",
+                  "value": "demo_file"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Configmap / Secret",
+      "item": [
+        {
+          "name": "HTML configmap / secret",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/html/configmap-secret",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "html",
+                "configmap-secret"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "HTML sealed secret",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9011/devops/blue/html/sealed-secret",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9011",
+              "path": [
+                "devops",
+                "blue",
+                "html",
+                "sealed-secret"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Service",
+      "item": [
+        {
+          "name": "LoadBalancer",
+          "item": [
+            {
+              "name": "Hello Blue (via LoadBalancer) 1",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8111/devops/blue/api/hello",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8111",
+                  "path": [
+                    "devops",
+                    "blue",
+                    "api",
+                    "hello"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Hello Blue (via LoadBalancer) 2",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9111/devops/blue/api/hello",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9111",
+                  "path": [
+                    "devops",
+                    "blue",
+                    "api",
+                    "hello"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Hello Yellow (via LoadBalancer) 1",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8112/devops/yellow/api/hello",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8112",
+                  "path": [
+                    "devops",
+                    "yellow",
+                    "api",
+                    "hello"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Hello Yellow (via LoadBalancer) 2",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9112/devops/yellow/api/hello",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9112",
+                  "path": [
+                    "devops",
+                    "yellow",
+                    "api",
+                    "hello"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "NodePort",
+          "item": [
+            {
+              "name": "Hello Blue (via NodePort)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:port-blue/devops/blue/api/hello",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "port-blue",
+                  "path": [
+                    "devops",
+                    "blue",
+                    "api",
+                    "hello"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Hello Yellow (via NodePort)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:port-yellow/devops/yellow/api/hello",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "port-yellow",
+                  "path": [
+                    "devops",
+                    "yellow",
+                    "api",
+                    "hello"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "ClusterIP",
+          "item": [
+            {
+              "name": "Hello Blue (via proxied ClusterIP)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8888/api/v1/namespaces/:namespace/services/:service-and-port-name/proxy/devops/blue/api/hello",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8888",
+                  "path": [
+                    "api",
+                    "v1",
+                    "namespaces",
+                    ":namespace",
+                    "services",
+                    ":service-and-port-name",
+                    "proxy",
+                    "devops",
+                    "blue",
+                    "api",
+                    "hello"
+                  ],
+                  "variable": [
+                    {
+                      "key": "namespace",
+                      "value": "devops"
+                    },
+                    {
+                      "key": "service-and-port-name",
+                      "value": "devops-blue-clusterip:http"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Hello Yellow (via proxied ClusterIP)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8888/api/v1/namespaces/:namespace/services/:service-and-port-name/proxy/devops/yellow/api/hello",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8888",
+                  "path": [
+                    "api",
+                    "v1",
+                    "namespaces",
+                    ":namespace",
+                    "services",
+                    ":service-and-port-name",
+                    "proxy",
+                    "devops",
+                    "yellow",
+                    "api",
+                    "hello"
+                  ],
+                  "variable": [
+                    {
+                      "key": "namespace",
+                      "value": "devops"
+                    },
+                    {
+                      "key": "service-and-port-name",
+                      "value": "devops-yellow-clusterip:http"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ingress",
+      "item": [
+        {
+          "name": "Hello Blue - 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue - 1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delay Blue - 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/delay/:delay-second",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "delay",
+                ":delay-second"
+              ],
+              "variable": [
+                {
+                  "key": "delay-second",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Yellow - 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - 1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delay Yellow - 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/delay/:delay-second",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "delay",
+                ":delay-second"
+              ],
+              "variable": [
+                {
+                  "key": "delay-second",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Blue - 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-blue/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-blue",
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue - 2",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-blue/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-blue",
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delay Blue - 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-blue/devops/blue/api/delay/:delay-second",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-blue",
+                "devops",
+                "blue",
+                "api",
+                "delay",
+                ":delay-second"
+              ],
+              "variable": [
+                {
+                  "key": "delay-second",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Yellow - 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-yellow/devops/yellow/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-yellow",
+                "devops",
+                "yellow",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - 2",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-yellow/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-yellow",
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delay Yellow - 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-yellow/devops/yellow/api/delay/:delay-second",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-yellow",
+                "devops",
+                "yellow",
+                "api",
+                "delay",
+                ":delay-second"
+              ],
+              "variable": [
+                {
+                  "key": "delay-second",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue - 3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://blue.devops.local/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "blue",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - 3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://yellow.devops.local/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "yellow",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue - 4",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - 4",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gateway API",
+      "item": [
+        {
+          "name": "Hello Blue - 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue - 1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delay Blue - 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/delay/:delay-second",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "delay",
+                ":delay-second"
+              ],
+              "variable": [
+                {
+                  "key": "delay-second",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Yellow - 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - 1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delay Yellow - 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/delay/:delay-second",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "delay",
+                ":delay-second"
+              ],
+              "variable": [
+                {
+                  "key": "delay-second",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Blue - 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-blue/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-blue",
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue - 2",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-blue/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-blue",
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delay Blue - 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-blue/devops/blue/api/delay/:delay-second",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-blue",
+                "devops",
+                "blue",
+                "api",
+                "delay",
+                ":delay-second"
+              ],
+              "variable": [
+                {
+                  "key": "delay-second",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Yellow - 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-yellow/devops/yellow/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-yellow",
+                "devops",
+                "yellow",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - 2",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-yellow/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-yellow",
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delay Yellow - 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/the-yellow/devops/yellow/api/delay/:delay-second",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "the-yellow",
+                "devops",
+                "yellow",
+                "api",
+                "delay",
+                ":delay-second"
+              ],
+              "variable": [
+                {
+                  "key": "delay-second",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue - 3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://blue.devops.local/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "blue",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - 3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://yellow.devops.local/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "yellow",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue - 4",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - 4",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue - TLS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.devops.local/devops/blue/api/echo",
+              "protocol": "https",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - TLS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gateway API Traffic Management",
+      "item": [
+        {
+          "name": "HTTP Method Matching - GET",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "HTTP Method Matching - POST",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "HTTP Method Matching - PUT",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "HTTP Method Matching - PATCH",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Param Matching - Circle",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/hello?shape=circle",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ],
+              "query": [
+                {
+                  "key": "shape",
+                  "value": "circle"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Param Matching - Eclipse",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/hello?shape=eclipse",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ],
+              "query": [
+                {
+                  "key": "shape",
+                  "value": "eclipse"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Param Matching - Oval",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/hello?shape=oval",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ],
+              "query": [
+                {
+                  "key": "shape",
+                  "value": "oval"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Param Matching - Other",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/hello?shape=square",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ],
+              "query": [
+                {
+                  "key": "shape",
+                  "value": "square"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Param Matching - None",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request Header Modifier",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "my-header-to-be-changed-by-gateway-api",
+                "value": "lorem-ipsum",
+                "type": "text"
+              },
+              {
+                "key": "my-header-to-be-removed-by-gateway-api",
+                "value": "dolor-sit-amet",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/echo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request Mirorring",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Traffic Splitting",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"K8s-App-Version header exists and contains 2.0.1\", function () {\r",
+                  "    pm.response.to.have.header(\"K8s-App-Version\");\r",
+                  "    pm.expect(pm.response.headers.get(\"K8s-App-Version\")).to.equal(\"2.0.1\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ingress - Monitoring",
+      "item": [
+        {
+          "name": "Random Status (Blue)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/status/:response-status-code",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "status",
+                ":response-status-code"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "random"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Random Status (Yellow)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/status/:response-status-code",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "status",
+                ":response-status-code"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "random"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2xx Status (Blue)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/status/:response-status-code",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "status",
+                ":response-status-code"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2xx Status (Yellow)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/status/:response-status-code",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "status",
+                ":response-status-code"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ingress - TLS",
+      "item": [
+        {
+          "name": "Echo Blue - TLS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.devops.local/devops/blue/api/echo",
+              "protocol": "https",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow - TLS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/yellow/api/echo",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ingress - Combination",
+      "item": [
+        {
+          "name": "Hello Blue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.devops.local/devops/blue/api/hello",
+              "protocol": "https",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Yellow",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.devops.local/devops/yellow/api/hello",
+              "protocol": "https",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Blue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.devops.local/devops/blue/api/echo",
+              "protocol": "https",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Echo Yellow",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.devops.local/devops/yellow/api/echo",
+              "protocol": "https",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Monitoring",
+      "item": [
+        {
+          "name": "Fake Load CPU (Blue)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/load/cpu?period-second=120&cpu=3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "load",
+                "cpu"
+              ],
+              "query": [
+                {
+                  "key": "period-second",
+                  "value": "120"
+                },
+                {
+                  "key": "cpu",
+                  "value": "3"
+                },
+                {
+                  "key": "",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fake Load Memory (Blue)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/load/memory?period-second=120&memory-mb=220",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "load",
+                "memory"
+              ],
+              "query": [
+                {
+                  "key": "period-second",
+                  "value": "120"
+                },
+                {
+                  "key": "memory-mb",
+                  "value": "220"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fake Load CPU (Yellow)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/load/cpu?period-second=120&cpu=3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "load",
+                "cpu"
+              ],
+              "query": [
+                {
+                  "key": "period-second",
+                  "value": "120"
+                },
+                {
+                  "key": "cpu",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fake Load Memory (Yellow)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/yellow/api/load/memory?period-second=120&memory-mb=200",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "load",
+                "memory"
+              ],
+              "query": [
+                {
+                  "key": "period-second",
+                  "value": "120"
+                },
+                {
+                  "key": "memory-mb",
+                  "value": "200"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Autoscaling",
+      "item": [
+        {
+          "name": "Fake CPU Load Blue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/api/load/cpu?cpu=1&period-second=600",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "load",
+                "cpu"
+              ],
+              "query": [
+                {
+                  "key": "cpu",
+                  "value": "1"
+                },
+                {
+                  "key": "period-second",
+                  "value": "600"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Resource Request Limit",
+      "item": [
+        {
+          "name": "Fake CPU Load Blue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost/devops/blue/api/load/cpu?cpu=5&period-second=3600",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "load",
+                "cpu"
+              ],
+              "query": [
+                {
+                  "key": "cpu",
+                  "value": "5"
+                },
+                {
+                  "key": "period-second",
+                  "value": "3600"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fake Memory Load Blue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost/devops/blue/api/load/memory?memory-mb=3000&period-second=3600",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "load",
+                "memory"
+              ],
+              "query": [
+                {
+                  "key": "memory-mb",
+                  "value": "3000"
+                },
+                {
+                  "key": "period-second",
+                  "value": "3600"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Stateful Set",
+      "item": [
+        {
+          "name": "Stateful Set via Gateway API",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload image - Pod 0",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/timpa/Downloads/zero.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:9110/devops/blue/api/image",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9110",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "image"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload image - Pod 1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/timpa/Downloads/one.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:9111/devops/blue/api/image",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9111",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "image"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload image - Pod 2",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/timpa/Downloads/two.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:9112/devops/blue/api/image",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9112",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "image"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List images - Pod 0",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9110/devops/blue/api/images",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9110",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "images"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List images - Pod 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9111/devops/blue/api/images",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9111",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "images"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List images - Pod 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9112/devops/blue/api/images",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9112",
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "images"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Security Context",
+      "item": [
+        {
+          "name": "Hello Blue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Private Repository",
+      "item": [
+        {
+          "name": "Hello Red",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/red/api/hello",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "red",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Helm - Spring Boot REST API",
+      "item": [
+        {
+          "name": "Hello Yellow 01",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/yellow/api/hello",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Yellow 02",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://yellow.devops.local/devops/yellow/api/hello",
+              "protocol": "http",
+              "host": [
+                "yellow",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "yellow",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Blue 03",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/html/configmap-secret",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "html",
+                "configmap-secret"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hello Blue 04",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/USER/Downloads/lemari-Luar.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Helm - Chartmuseum",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://chartmuseum.local/chartmuseum/health",
+              "protocol": "http",
+              "host": [
+                "chartmuseum",
+                "local"
+              ],
+              "path": [
+                "chartmuseum",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List all charts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://chartmuseum.local/chartmuseum/api/charts",
+              "protocol": "http",
+              "host": [
+                "chartmuseum",
+                "local"
+              ],
+              "path": [
+                "chartmuseum",
+                "api",
+                "charts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List all version of a chart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://chartmuseum.local/chartmuseum/api/charts/:chart-name",
+              "protocol": "http",
+              "host": [
+                "chartmuseum",
+                "local"
+              ],
+              "path": [
+                "chartmuseum",
+                "api",
+                "charts",
+                ":chart-name"
+              ],
+              "variable": [
+                {
+                  "key": "chart-name",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload new chart version",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "file",
+              "file": {
+                "src": ""
+              }
+            },
+            "url": {
+              "raw": "http://chartmuseum.local/chartmuseum/api/charts",
+              "protocol": "http",
+              "host": [
+                "chartmuseum",
+                "local"
+              ],
+              "path": [
+                "chartmuseum",
+                "api",
+                "charts"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "basic",
+        "basic": [
+          {
+            "key": "password",
+            "value": "password",
+            "type": "string"
+          },
+          {
+            "key": "username",
+            "value": "chartmuseum",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ArgoCD",
+      "item": [
+        {
+          "name": "Hello Blue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/hello",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ArgoCD Sensitive Data",
+      "item": [
+        {
+          "name": "Configmap/Secret",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/html/configmap-secret",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "html",
+                "configmap-secret"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reloader",
+      "item": [
+        {
+          "name": "Configmap/Secret",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/devops/blue/html/configmap-secret",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "html",
+                "configmap-secret"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cert Manager",
+      "item": [
+        {
+          "name": "Blue via Ingress (HTTPS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://blue.devops.local/devops/blue/api/hello",
+              "protocol": "https",
+              "host": [
+                "blue",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue via Gateway API (HTTPS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.devops.local/devops/blue/api/hello",
+              "protocol": "https",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "East West",
+      "item": [
+        {
+          "name": "Blue chain call (1st) - 2xx",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/chain/:response-status-code/one",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "one"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue chain call (2nd) - 2xx",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/chain/:response-status-code/two",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "two"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue chain call (3rd) - 2xx",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/chain/:response-status-code/three",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "three"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue chain call (4th) - 2xx",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/chain/:response-status-code/four",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "four"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue chain call (5th) - 2xx",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://api.devops.local/devops/blue/api/chain/:response-status-code/five",
+              "protocol": "http",
+              "host": [
+                "api",
+                "devops",
+                "local"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "five"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Istio (via Google Cloud)",
+      "item": [
+        {
+          "name": "Blue - hello",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-redirect-to",
+                "value": "pod-1.0.0",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "x-header-loadbalancer",
+                "value": "pqr",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/hello",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - echo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/echo",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "echo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - delay",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/delay?min-delay-second=6&max-delay-second=10",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "delay"
+              ],
+              "query": [
+                {
+                  "key": "min-delay-second",
+                  "value": "6"
+                },
+                {
+                  "key": "max-delay-second",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/status/:response-status-code",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "status",
+                ":response-status-code"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - chain call (1st)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/chain/:response-status-code/one",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "one"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx",
+                  "description": "2xx,3xx,4xx,5xx,random"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - chain call (2nd)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/chain/:response-status-code/two",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "two"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - chain call (3rd)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/chain/:response-status-code/three",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "three"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - chain call (4th)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-retry",
+                "value": "yes",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/chain/:response-status-code/four",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "four"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - chain call (5th)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-redirect-to",
+                "value": "pod-2.0.0",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/chain/:response-status-code/five",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                ":response-status-code",
+                "five"
+              ],
+              "variable": [
+                {
+                  "key": "response-status-code",
+                  "value": "2xx"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - chain echo (1st)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/chain/echo/one",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                "echo",
+                "one"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blue - chain echo (2nd)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kubernetes-address}}/devops/blue/api/chain/echo/two",
+              "host": [
+                "{{kubernetes-address}}"
+              ],
+              "path": [
+                "devops",
+                "blue",
+                "api",
+                "chain",
+                "echo",
+                "two"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "kubernetes-address",
+      "value": "http://34.101.218.38",
+      "type": "string"
+    }
+  ]
+}
