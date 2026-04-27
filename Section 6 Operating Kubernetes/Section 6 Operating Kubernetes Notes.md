@@ -19,6 +19,7 @@ Start minikube tunnel and don't close the terminal
     bash --> minikube tunnel
 
 ## 23 Labels
+
 [⬆ Back to top](#top)
 
 A label identifies a Kubernetes object. One object can have multiple labels, and one label can be attached to multiple objects. Once labels have been attached to an object, we can use a label selector to select objects based on a matching expression. For example, we can find objects with the label "environment" and a value of "production". In this hands-on, we will create several services that expose only certain pods. We will use the namespace "devops" for the rest of this lesson. Ensure these ports are free on your laptop.
@@ -35,8 +36,10 @@ Check if the ports are used
     # no result means that the port is free 
 
 For a hands-on example, we will have two pods. The first pod has a green and pink label. The second pod has a green and purple label. Then we will have several services. First service runs on port 9011 and has a label selector that matches green and pink, so this will only expose pod 1. Second service runs on port 9012 and has a label selector that matches green and purple, so this will only expose pod 2. The third service, which runs on port 9013, has a label selector that matches the green and black labels. Since we don't have a black label on any pod, this service will not expose any pod. The fourth service runs on port 9014 and has a label selector that matches only green. This labeling means that the fourth service will expose pods 1 and 2.
-![Pod 1 & Service 1](pics/pods-services.jpg)
 
+<img src="pics/pods-services.jpg" width="1000" />
+<br>
+<br>
 
 Open the sample file in the folder label - \devops-kubernetes-resources-references\kubernetes-istio-scripts\kubernetes\label\devops-label.yml. Here is a configuration file that corresponds to the previous slide. So there are two deployments. 
 
@@ -116,7 +119,9 @@ Let's delete the deployment so we can start fresh on the next lesson.
 
 [⬆ Back to top](#top)
 
+
 ## 24 Annotations
+
 [⬆ Back to top](#top)
 
 We can add annotations to each Kubernetes resource. Like a label, an annotation is a key-value pair that we add to the Kubernetes object. Although label and annotation have a similar format, which is key-value, Labels are used more in Kubernetes, such as to identify pods. 
@@ -126,12 +131,17 @@ Annotation is for a human or a third-party application that is installed on the 
 We can put both the label and the annotation in the metadata section of a Kubernetes object.
 
 For example, this deployment object has two labels in red and three annotations in green.
-![Labels & Annotations](pics/labels-annotations.png)
+
+<img src="pics/labels-annotations.png" width="600" />
+<br>
+<br>
 
 
 [⬆ Back to top](#top)
 
+
 ## 25 Port Forwarding
+
 [⬆ Back to top](#top)
 
 In development, it may be necessary to access a pod directly. In such a case, we cannot use a load balancer if we have multiple replicas, because it would distribute traffic across them. In development, we can access a pod by opening its application port, making it directly accessible from the host. This technique is called port-forwarding. The syntax is simple. We use 'kubectl port forward' with the pod name and port binding. The left side of the colon is the host port, and the right side is the application port on the pod.
@@ -253,11 +263,16 @@ Delete the resources to start fresh in the next example
 
 [⬆ Back to top](#top)
 
+
 ## 26 Health Check
+
 [⬆ Back to top](#top)
 
 In practice, there might be more than one pod replica. For example, we ask Kubernetes to create three replicas of a pod. The load balancer service will then distribute traffic among them. However, there may be a case where the 2nd pod crashes due to incorrect application logic. In that case, Kubernetes will do two things: 1st, the load balancer will distribute traffic only among healthy pods. 2nd, restart the crashed pod to achieve the target of 3 replicas. After the restart, when the 2nd pod is back to healthy, the load balancer will also distribute traffic to the restarted pod.
-![Pod Health Check](pics/pod-health-check.jpg)
+
+<img src="pics/pod-health-check.jpg" width="1000" />
+<br>
+<br>
 
 Kubernetes will know whether a pod is healthy using the health check mechanism. We can ask Kubernetes to periodically run a terminal command, HTTP, TCP, or gRPC request. The protocol varies, but the key is periodic checks. Kubernetes will execute the defined health check protocol, and if the response is successful, it will mark the pod as healthy. This health check will be run periodically, for example, every 1 minute. When a certain threshold is met, Kubernetes marks the pod as unhealthy. For example, if the response is bad or times out after 5 seconds, for three consecutive attempts. There are two important states in a health check: readiness and liveness.
 
@@ -439,7 +454,9 @@ Please note that from this point forward, I will provide readiness and liveness 
 
 [⬆ Back to top](#top)
 
+
 ## 27 Pod Lifecycle
+
 [⬆ Back to top](#top)
 
 When we run kubectl get pod, there is a status field. There are several possible statuses. 
@@ -453,10 +470,11 @@ When we run kubectl get pod, there is a status field. There are several possible
 - ImagePullBackOff means Kubernetes attempted to pull the image but failed, and it is now retrying with a backoff period. Common causes include an incorrect image name or tag, a private registry without credentials, or a slow network. Describe the pod to know the exact reason. If this is due to the network, ensure you have a strong internet connection, then delete the pod. Kubernetes will try to pull the image again. 
 - CrashLoopBackOff. However, this state is not a pod. It is a container state. It appears when a container repeatedly crashes after restarting. Kubernetes keeps retrying and increases the delay between restarts (hence the name, backoff). Common causes include application logic errors, missing environment variables, failing dependencies, or incorrect startup commands.
 
-
 [⬆ Back to top](#top)
 
+
 ## 28 Log
+
 [⬆ Back to top](#top)
 
 When something goes wrong, we must check it. In most applications, it will have an exception log.

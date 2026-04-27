@@ -10,6 +10,7 @@
 
 
 ## 13 Introducing Kubernetes
+
 [⬆ Back to top](#top)
 
 A container provides an isolated environment in which an application and its dependencies can run. However, containers often need to be managed and connected to the external world. For example, shared file systems, networking, high availability, load balancing, and distribution. 
@@ -21,12 +22,15 @@ Kubernetes is sometimes referred to as K8S because it has eight letters between 
 In an analogy, a container is a person. It has a brain, heart, lungs, etc., and can live on its own. Each person is independent. If one person gets heart surgery, the other person's heart will not be affected. To explore the wide sea of systems, a person can swim, but it won't be easy. Therefore, we need a ship to manage the person. Kubernetes is this ship. A person (the container) boards a ship. Kubernetes captain assigns a room to this person. Inside the room, there can be one or more people. This room is called a pod on Kubernetes. So a container (person in the analogy) lives in a pod (a ship's room in the analogy). A single pod can contain one or more containers. In Kubernetes, the smallest unit is a pod. On the ship, each container (hence the pod) performs a specific function. For example, Anna is an excellent chef, so she is responsible for providing food. This 'Anna' container can work alone, so she is alone in her pod. John is a master magician and is responsible for providing entertainment. However, John cannot work alone. He needs an assistant magician: Grace. In Kubernetes, John and Grace, both containers, must coexist to run. So they live in the same pod. 
 
 We also have Kubernetes Captain. Kubernetes in a production environment is more like a fleet of ships. This fleet of ships is known as a Kubernetes cluster. The captain lives on a different ship, while containers and pods live on another ship. The captain's ship is called the Kubernetes control plane node. The ship where the pods live is called a Kubernetes worker node. Each Kubernetes cluster will have at least a control plane node and a worker node. In development, we can run them on the same machine to create a single-machine Kubernetes cluster. Anna is really good at cooking. The captain thinks: it would be nice if we let the outside world know there is an Anna pod so that end users can order food from Anna. The captain then posted an information board stating that food service is available on the ship. This information board, which exposes a pod, is known as a Kubernetes service. So now the outside world knows there is food service. However, end users (the application users) are not part of the ship. Consider them like drones that come to the ship to request services. A drone can request food through the Anna service. The Anna service acts as a load balancer, automatically distributing requests across all available Anna pods. The drone does not know or care which specific Anna pod serves the request. 
+
 ![Basic Kubernetes Architecture](pics/basic_cubernetes_architecture.png)
 
 The drone just put the food order through the Anna service, which routes it to one of the available Anna pods. One of the Anna pods will serve the food, serve it back through the service, and then the drone will depart with it. At first, everything goes well. Anna pod can serve up to 20 food transactions per second. But then the food drones keep coming, and now there are 200 food transactions per second. Fortunately, the captain (the control plane node) can clone a pod whose function is the same across all pod clones. So the Kubernetes captain creates clones of Anna's pod, which, of course, include Anna's container. In Kubernetes, this clone is known as a replica. For 200 food transactions per second, the captain decides it needs 10 Anna pods, so he creates 10 replicas for the Anna pod. 
+
 ![Replicas](pics/10_Anna_replicas.png)
 
 After further analysis, the transaction rate is not always 200 per second. It's only sometimes. Moreover, it does not always go directly to 200 transactions per second, but increases gradually: 50 per second, 100 per second, etc. So allocating 10 dedicated Anna pods on the ship is a waste of ship space, or, in the Kubernetes world, a waste of CPU and memory. So here is what is in the captain's mind. He will create at least two Anna pods. He can tell when those Anna pods are overwhelmed by watching their CPU and memory usage. If usage exceeds 80%, the captain will create a third pod and monitor it. If the third anna pod usage exceeds 80%, he will create the fourth pod and then watch it. On the contrary, if he has four anna pods and the 4th pod's usage is below 30%, he will reduce the pod replica to 3. The captain (the control plane node) will repeat this watch-create-or-remove process to ensure all food drones are served with the optimal number of Anna Pods. But he will have a minimum of 2 Anna Pod and a maximum of only 10. This automatic scaling feature is called Horizontal Pod Autoscaler (HPA). The HPA can automatically add or remove pods based on configurable thresholds, such as CPU or memory usage, or even custom metrics. Note that the service will not be affected by this replication. The service task exposes the pod to the external world. In this case, service is like an entry on the information board, so even if there are five Anna pods or only one, it does not matter. The information board only shows that food service is available.
+
 ![HPA - Horizontal Pod Autoscaler](pics/HAP_explained.png)
 
 Pods areisolated from each other. Anna does not knowthe other pod's whereabouts, and vice versa. In Kubernetes, there is actually a Thomas Pod. Thomas is a nutritionist. His responsibility is to provide a diet and an eating menu. The captain thinks it will be good if Thomas and Anna can work together. The important thing is that everybody knows there is Anna and Thomas' pod. And so the captain created Thomas' service. Now, end users can interact with Anna, Thomas, or both. Even Thomas and Anna can interact with each other. The captain is also using horizontal replication on Thomas.
@@ -38,28 +42,35 @@ Let's stop here for a while. The actual Kubernetes will resemble the analogy, as
 ![Kubernetes Control Plane Architecture](pics/kubernetes_architecture_explained.png)
 
 This process using Kubernetes goes so well, with many containers running across many pods and the pods exposed as services. Now the ship has Anna, Thomas, John (with Grace), Hannah, Justin, etc. The captain then uses a certain mechanism to manage pods. 
+
 ![Pod Configuration Scenario](pics/pod_configuration_scenario_1.png)
 
 First, the captain separates the ship into distinct areas. In Kubernetes, this area is known as a namespace, where related pods are grouped. For example, the captain creates a namespace called health, where Anna (the chef), Thomas (the nutritionist), and Hannah (the fitness trainer) live. And then there is the entertainment namespace, where John (plus Grace) and Justin the singer live. The captain also said that each worker node will have a default namespace. Namespaces provide greater isolation, allowing pods in the same namespace to communicate and share resources more easily. For example, there might be a secret password accessible only by pods in the same namespace. For example, in real life, an application's namespace is currently in development, testing, and production. We can add as many namespaces as needed. Each Kubernetes cluster has a default namespace, though it is a better practice to put the application in a specific namespace. Second, we can label each container. This label can be very specific, like: bank transfer application, or more general, like 'finance', 'python app', etc. Each container can have zero to multiple labels. 
+
 ![Namespaces and container's labels](pics/namespaces_and_container_labels.png)
 
 The actual Kubernetes will resemble the analogy, as shown in this diagram. There are default namespaces and other namespaces on the worker node. The namespace is up to you. This example uses the software development lifecycle: development, test, and production. Each namespace has its own pods. In this sample, each pod includes Q and R, but the content will differ slightly across namespaces depending on the progress of each software development lifecycle. Moreover, in production, we use a horizontal autoscaler, whereas on dev and test, we use only one replica.
+
 ![Cluster Architecture](pics/cluster_architecture.png)
 
 One day, Anna comes and asks the captain, Where can she save her recipe books? These books represent data. The captain says he has some bookshelves for Anna to keep her books. In Kubernetes, a container may require a volume (a filesystem) to store data. Typically, data is saved on a dedicated database product outside Kubernetes. But sometimes non-database items exist, like specific XML configuration or PDF output from certain pod processes. In Kubernetes, we can mount volumes for use by pods. The captain said he has many types of bookshelves: short, tall, wide, etc. Kubernetes has many types of volumes. For example, a volume can be a local disk on a worker node, a dedicated persistent disk in cloud products, or another type of storage.
+
 ![Kubernetes Volumes](pics/kubernetes_volumes.png)
 
 
 The Kubernetes way has become even more popular, and one ship (one worker node) is no longer enough. The captain then requested another ship. So the almighty Kubernetes admin provides two more ships, and the captain now manages three ships (three worker nodes). A Kubernetes cluster is so smart that it can allocate pods, or even pod replicas, to different nodes, and the user interacts only through the exposed service. The user does not need to know where the services are distributed. And so, this is the analogy for basic Kubernetes.
+
 ![Kubernetes Scale Worker Nodes](pics/scale_worker_nodes.png)
 
 Each cluster will have a control plane node and one or more worker nodes. The worker node has namespaces. Each worker node runs a pod replica that contains one or more containers. Pods are exposed via the service, and the user can access pod functionality through it.
+
 ![Kubernetes Architecture Last Example](pics/kubernetes_architecture_last.png)
 
 [⬆ Back to top](#top)
 
 
 ## 14 Installing Kubernetes
+
 [⬆ Back to top](#top)
 
 There are multiple ways to install Kubernetes. In the local environment, we can use Kubernetes embedded on Docker Desktop. If we use a Linux machine without a graphical user interface, we can install using minikube. In the cloud, each provider will have their own name. Google Cloud has Google Kubernetes Engine. Amazon provides Elastic Kubernetes Service. Azure provides Azure Kubernetes Service. Local installation for this course will use Kubernetes on Minikube. If you use Docker Desktop, you might need additional setup or commands, but that is out of scope for this course.
@@ -100,12 +111,11 @@ Start on clean minikube setup
 
 Wait a while until it becomes ready.
 
-
 [⬆ Back to top](#top)
 
 
-
 ## 15 Hello Kubernetes
+
 [⬆ Back to top](#top)
 
 In this lesson, we will deploy a single nginx pod to the local Kubernetes cluster. Mostly, we will work using kubectl on the terminal. I'm using Windows, but the kubectl command is the same for all operating systems. All commands in this course are available in the last section of the course, in the lecture titled 'Resources and References'. 
@@ -226,12 +236,11 @@ The two commands we saw (get and describe) require a parameter from this API res
     Internal Traffic Policy:  Cluster
     Events:                   <none>
 
-
 [⬆ Back to top](#top)
 
 
-
 ## 16 Using Minikube
+
 [⬆ Back to top](#top)
 
 The following terminal commands are for operating minikube in this course. "Minikube start" starts a Kubernetes cluster. We run this command when we restart our laptop, and after the Docker engine started. Minikube requires Docker to run. If you configure your Docker installation not to start automatically, please start Docker manually before starting minikube. We can configure minikube's memory and CPU by setting memory and CPU flags. 
@@ -244,7 +253,9 @@ Minikube tunnel will be used to create network tunneling from Kubernetes to the 
 
 [⬆ Back to top](#top)
 
+
 ## 17 Scaling Pod
+
 [⬆ Back to top](#top)
 
 In this lesson, we will learn how to scale a pod. Remember about scaling? We will create multiple instances of a pod on Kubernetes. To do this, we will use the devops-blue image from the previous lesson about building a Docker image. If you did not build the image, you can use my image on Docker Hub. For the command, you can copy and paste from the "Resources and References" section of the course.
@@ -308,6 +319,7 @@ If you use the application from my Docker Hub, it also provides an API to find o
 As we can see, the IP address here is a pod virtual IP. If I refresh the URL, it will always get this IP address. Now here is the interesting part. We can scale the pods, but the service will only use one endpoint. To do this, we will use a service-type load balancer.
 
 When we have more than one pod, we can distribute incoming traffic across them. The one responsible for distributing or balancing the load is the service with the load balancer type. This service type will distribute traffic even if the pod is located on separate worker nodes. Hence, no single pod handles 100% of the traffic. Each pod handles only partial traffic, not necessarily evenly. For example, if we have three pods, the proportion for each pod can be around one-third. Or it can be 20-40-40. This distribution depends on the algorithm used to distribute the load. The aim is to balance the load across available pods. So if the third pod is no longer available, the traffic only goes to pods one and two. On the contrary, when the fourth pod exists, traffic is distributed across the four pods. The user will only access the load balancer, without knowing what happens behind the scenes.
+
 ![Kubernetes Load Balancer](pics/load_balancer.png)
 
 Now we go to the magic, the balancing. We scale the existing deployment to three replicas using the scale command.
@@ -366,6 +378,5 @@ Let's curl to http://localhost:8111 hello endpoint several times. As we can see,
 Within Kubernetes, we actually have these resources. First, the deployment, where we indicate that we use a certain Docker image and three replicas. So we have three pods up. One pod equals one container, or one instance of an image. So each pod has a different name and a different virtual IP address. Then we have a load balancer service, a single communication entry point for pod replicas. Each traffic flowing through the service will be distributed to the pod.
 
 ![Traffic to Pods Distribution](pics/pods_distribution.png)
-
 
 [⬆ Back to top](#top)

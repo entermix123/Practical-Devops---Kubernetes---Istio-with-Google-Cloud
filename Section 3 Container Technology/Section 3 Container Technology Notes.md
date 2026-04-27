@@ -11,6 +11,8 @@
 
 ## Container
 
+[⬆ Back to top](#top)
+
 The basic idea of microservices is to separate applications with their own technologies and releases. This principle means that service X might use Java technology. Service Y uses Go programming. Service Z requires Python because its logic is better suited to it.
 
 The underlying technology, along with business logic from the source code, can be packaged into a single deployable application. Generally, each technology provides its own approach to creating a deployable application. 
@@ -20,6 +22,7 @@ For example, a Java application compiled and packaged as a runnable JAR requires
 In modern deployments, all the required items to run an application can be packaged into a container. The most common container technology right now is Docker. Using container technology means that container X will run a Linux operating system, a Java runtime environment, and the jar file. 
 
 Service Y, on the other hand, does not need a go runtime. However, a Go-native application can only run in the environment where it was built. This means that if the Go compiler is built on Linux, the only operating system that can run that go-native code is Linux. If, for some reason, Windows must be used, then the binary cannot run. Using a container, we can also package the Go native, along with the Linux operating system. A Windows user can then run the container. At service Z, we package the Linux Operating system, Python runtime, and the source code as a container. 
+
 ![Deployment Strategy](pics/Deployment_Strategy.png)
 
 
@@ -45,9 +48,11 @@ The basic workflow for using Docker is as follows.
 - She then pushes the image into the Docker registry. The operation team that has access to the production machine and the Docker registry will run the image as a container. 
 - The production machine also has Docker runtime installed. Running the container means Docker pulls the image and creates a container from it. This is the most basic working process. 
 - A DevOps engineer can create automated scripts or a pipeline to automate some or all of the process.
+- 
 ![Most Basic Working Process](pics/Most_Basic_Working_Process.png)
 
 A Docker image will not care about the operating system on which it was built, or where it was pulled and run as a container. A Docker image contains its own operating system on which the application runs. For example, a person can use a Mac laptop, and build the image with packaged Ubuntu Linux. The image will always run on top of Ubuntu. Another developer who uses a Windows laptop pulls the image and runs it as a container. The image thinks it's running Ubuntu Linux. Even if a production server runs Red Hat Linux, a container running this image on that server will run on top of Ubuntu Linux. This portability is so wide that, in general, it will accommodate most cases. 
+
 ![Running a Container](pics/Running_a_container.png)
 
 As we know, one host server can run multiple containers. A Docker image contains complete items, including the operating system and runtime libraries. An image size might be hundreds of megabytes. 
@@ -55,9 +60,14 @@ As we know, one host server can run multiple containers. A Docker image contains
 Suppose we have a 200 megabyte image. If we run five containers on one server with that particular image, does that mean it requires 1 gigabyte? The answer is no. Roughly, it will require only 200 megabytes, since all five containers use the same image. This efficient sizing is related to image layering. A container is a process that executes the image, so it does not create a copy of the image. It only runs the existing image. However, containers are independent of each other. This means if container two is modified or even broken, the other containers will not be affected.
 
 A Docker image consists of layers. For example, a Java application image might contain layers. Then there is another Java application image, which contains layers. Notice that in the second image, the operating system, Java runtime, and library P are the same. At one server, there are two containers, one for each image. The Docker engine will know about the layers. Instead of using a distinct copy of the operating system, Java runtime, and library P for each container, it will share the same layer across containers. The disk space used on the server will roughly be this much. 60 + 75 + 40 + 30 + 20 + 34 + 17 = 259 MB.
+
 ![Docker Image Layers](pics/Docker_image_layers.png)
 
+[⬆ Back to top](#top)
+
 ## Docker Hands on
+
+[⬆ Back to top](#top)
 
 Register and Install Docker Desktop - https://docs.docker.com/desktop/setup/install/windows-install/
 
@@ -92,9 +102,11 @@ Now that we have the container running, we actually have a busybox application o
 An application is useful only if we can use it and interact with it. There are many commands that we can use to interact with Docker. Not only the container, but also the image, or even the Docker engine itself. Search for 'Docker command list' online, and we will find a reference for Docker commands here - https://docs.docker.com/reference/cli/docker/. This command can be used on any operating system that has Docker installed.
 
 If you are a beginner in Docker, you might be confused about which command to use. This cheat sheet contains practical Docker commands for interacting with Docker and performing common tasks. 
+
 ![Docker Cheat Sheet](pics/Docker_Cheat_Sheet.png)
 
 The run command is very important because it actually creates containers where we can run applications. Here, I provide a sample of the commonly used flag, but you can always refer to the documentation for a full reference. This part is for working with containers. 
+
 ![Docker Cheat Sheet Containers Commands](pics/Docker_Cheat_Sheet_Containers_Commands.png)
 
 We have already seen how to run a hello-world and a busybox container, but neither is very useful. Let's see how we can interact with a container. We will run a simple nginx container. If you are not familiar, nginx is a simple web server. Run this command.
@@ -128,6 +140,7 @@ Exit the container.
     terminal --> exit
 
 Now, open a web browser and access localhost on port 80 We will get an error indicating that nothing is running on port 80. At this point, nginx is up and running but not accessible to the outside world. It is only accessible to the container. Having Docker is like having a virtual machine inside our machine. This means that if we have a laptop with this IP address and the Docker runtime installed, we will have the following conditions. This blue box is also called a Docker host. When a container runs an application, it will have its own virtual IP address. The container runs on a specific port, but the host cannot access the application on that port. The port number within the container is also like a virtual port number allocated by the Docker engine. The most common way is to publish the port on a container so it's accessible from the host. For example, we can publish container X on port 80 to port 8888 on the host machine. Make sure your 8888 port is free before this usage. It is not mandatory to expose the container port to the same host port number. This flexibility allows us to run another nginx instance on the same host. This second container also has a virtual IP address and a virtual port 80. To make the second container accessible, we also need to expose port 80. We can publish the port into any free host port. For example, we can publish the second nginx on port 8899.
+
 ![Simple container example](pics/example_architecture.png)
 
 Let's doit. Remove the existing nginx container first.
@@ -165,6 +178,7 @@ Open a web browser and navigate to localhost port 8899. We will see the Nginx we
     terminal --> curl https://localhost
 
 In a web browser, the localhost refers to your laptop. So this IP address is with the blue arrow. In the same way, if we run the host terminal. When we go inside the container, localhost refers to the container's virtual IP address. That means if we go into the smiling whale container and curl on the bash shell, The localhost refers to the green arrow. When we go into dancing octopus, The localhost refers to the red arrow. 
+
 ![Example](pics/docker_ports_example.png)
 
 Another practical item when working with containers is volume mount. A Docker container is like a virtual machine with its own filesystem (or a volume). The smiling whale and dancing octopus container in the current sample has its own volume and contains different files.
@@ -253,6 +267,7 @@ It is a fresh volume, with no nano or octopus.html. Therefore, usually we do vol
     terminal --> ls /usr/share/nginx/html/
 
 Volume mounting means we use a folder on the host machine and mount the container-specific folder into it. This action will treat the host folder as a container folder, so all files created, updated, or deleted in the host folder will be recognized in the container-mounted folder. Something like this, where we have the nginx-html folder on the host, and mount a specific folder on the smiling whale with it. We also have another folder on the host, and mount the dancing octopus to that folder. Better yet, we can mount the same host folder into multiple containers within that host. So we can mount the first host folder into the dancing octopus. Or even to the third container. 
+
 ![Volume Mount](pics/volume_mount.png)
 
 
@@ -286,8 +301,11 @@ It is not uncommon to add or modify a file in a container-mounted folder. And if
 
     terminal --> docker rm -f dancing_octopus smiling_whale
 
+[⬆ Back to top](#top)
 
 ## Building Docker Image
+
+[⬆ Back to top](#top)
 
 Containers play a significant role in DevOps, especially in deployment. In this lesson, we will learn how to create our own Docker image. We will create a Docker image for a Java application. To do this, we need to install Docker and Java. The source code is not a concern in this course. The application is a simple REST API with a few endpoints. The application will run at port 8111, so we need to expose that portlater.
 
@@ -300,6 +318,7 @@ Ensure you have installed Docker. If needed, you can see the previous lesson abo
 The heart of building a Docker image is the Dockerfile. This file is literally a text file named Dockerfile, no extension. It is common practice to use capital case for the D and lowercase for the rest. It contains steps for building a Docker image. I provide sample Java source code, including a Dockerfile, in the last section of the course, in a lecture titled 'Resources & References'.
 
 Generally speaking, tobuild an image from custom source code, We need to compile the application from source code into an executable. Notice that the steps may differ from one programming language to another. For example, in Java, we need to build using Maven or Gradle. In Python, we don't need to compile anything. On GO, we need to compile and build a binary, using the GO toolchain with specific syntax. Then we need a Dockerfile to instruct the Docker engine to build an image. Issue a Docker build command to execute Dockerfile instructions. This command will generate a Docker image on the local computer. We then tag the generated Docker image, Then push it to the Docker registry.
+
 ![Imge Creation Process](pics/image_creation_process.png)
 
 Use anytext editor to open the sample Dockerfile. A practical naming convention is that we use uppercase for instructions. Any line that starts with a hash character is just a comment. Here, we define the step-by-step instructions for building a Java image. Java source code needs to be compiled into a binary.
@@ -433,16 +452,25 @@ Let's remove the containers used in this lesson. Remove the image, too.
     terminal --> docker images                      # find image devops-blue:2.0.0 and copy the id
     terminal --> docker rmi <image devops-blue:2.0.0 id>
 
+[⬆ Back to top](#top)
+
 ## Semantic Versioning
+
+[⬆ Back to top](#top)
 
 Why the tag is 1.0.0, and not v1, version 1, or simply 1? This kind of numbering is called semantic versioning, or semver for short. It is a convention for determining the version number of software releases. Using semantic versioning helps users to understand the severity of changes in each new release. We don't have to use semantic versioning, But using it is better, since it is a standard convention that software users have agreed to.
 
 Semantic versioning has three parts: major, minor, and patch numbers for each release. The version string 1.3.2 in this example indicates 1 as the major, 3 as the minor, and 2 as the patch. Each of these parts is a number and increments according to certain rules.
 
 For example, when we have version 1.3.2 as the current release of a payment software with this feature. The patch is incremented for bug fixes or other changes that do not change the software's behavior. For example, if there is a bug when we pay using QR code, we fix the code and ship the new release with a change to the patch number. Minor is incremented for new functionality or backward-compatible changes. For example, adding a new payment feature using PayPal, or changing two-factor authentication to a 6-digit alphanumeric code instead of just a numeric code. Incrementing the minor must reset the patch back to zero. The major version is incremented for breaking changes, which are not backward-compatible. For example, instead of payment, the application can now also be used to withdraw money from a merchant. To do that, the payment protocol must be changed, so the new release is a major update. Incrementing the major should reset the patch and minor to zero, although this is not a hard requirement.
+
 ![Semantic Versioning](pics/semantic_versioning.png)
 
+[⬆ Back to top](#top)
+
 ## Docker Compose
+
+[⬆ Back to top](#top)
 
 Sometimes, we will need more than one container on a single host to run an application. A container might only work if another container exists. For example, an application container needs a database container. Rather than running containers one at a time, Docker allows multiple containers to run simultaneously. For that purpose, we can use Docker Compose, a script that defines containers, images, and the configuration required. We will install using Docker Compose. 
 
@@ -478,4 +506,4 @@ If we look at the working folder, it alsohas a docker-data folder, which we moun
 
 To terminate all containerswithin Docker, use the Docker down command.
 
-
+[⬆ Back to top](#top)

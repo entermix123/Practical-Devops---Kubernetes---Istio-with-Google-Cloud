@@ -9,6 +9,7 @@ Start minikube tunnel and don't close the terminal
     bash --> minikube tunnel
 
 ## 29 Dashboard
+
 [⬆ Back to top](#top)
 
 Kubernetes also provides a user interface dashboard. When using a cloud provider, they will provide their own dashboard. When using minikube, we can enable it.
@@ -76,7 +77,9 @@ Go to Pods menu and click details (3 dots) button for specific pod and choose lo
 
 [⬆ Back to top](#top)
 
+
 ## 30 Lens Dashboard
+
 [⬆ Back to top](#top)
 
 A dashboard alternative is Kubernetes Lens. Download it from this site - https://lenshq.io/. At the time this video was recorded, it was free. Try it: download, install, and log in. There's nothing special about the installation process, so I will skip that part. I will show you around, but the user interface when you purchase the course might be different from the one in this video. It should be fine.
@@ -84,6 +87,5 @@ A dashboard alternative is Kubernetes Lens. Download it from this site - https:/
 This is the lens user interface. It is intuitive and easy to navigate. We can browse each Kubernetes object deployed on our cluster. If we have multiple Kubernetes clusters, Lens will detect them, and we can select which cluster to observe.
 
 For navigating Kubernetes objects in this course, feel free to use Lens. The course will mostly use the kubectl command because it is more general. For complex navigation, the course might use a lens, as it is more user-friendly.
-
 
 [⬆ Back to top](#top)

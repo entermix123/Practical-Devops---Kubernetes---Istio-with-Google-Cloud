@@ -17,6 +17,7 @@ Start minikube tunnel and don't close the terminal
     terminal --> minikube tunnel
 
 ## 18 Imperative vs. Declarative
+
 [⬆ Back to top](#top)
 
 The kubectl command-line tool is used to create, read, update, and even delete Kubernetes objects. Using kubectl, we take an imperative approach to configuring Kubernetes. In reality, we mostly use a declarative approach by writing a Kubernetes configuration file, and applying that file to Kubernetes. To continue, we must understand the difference between the imperative and the declarative.
@@ -24,9 +25,11 @@ The kubectl command-line tool is used to create, read, update, and even delete K
 Once upon a time, I had a coffee shop. As we know, there are many ways to serve coffee. Right now, the only menu item is cappuccino coffee. To create one cup of good cappuccino, I must do several steps. Each step is specific,and to get a perfect cappuccino, each step must be executed in order. Of course, some steps can be interchanged. I can put either milk first or sugar first.
 
 However, some steps must be taken in order. For example, I cannot prepare the cup at the second step. It must be at the first step. This cappuccino-making (step-by-step, following the exact order) is called imperative or procedural. In other words, I must know how to make cappuccino coffee. That is what we did using kubectl in the previous example. We create a deployment, expose a service, and scale a replica. We can scale a replica first, or create a service first, but we cannot create a service without first creating a deployment. Generally speaking, they must be in the correct sequence.
+
 ![Imperative Coffee Example](pics/imperative_coffee_example.png)
 
 Eventually,I have a lot of customers to serve, and even an additional menu, like Americano coffee, or even a complex menu like 'hazelnut coffee latte with chocolate chip'. I cannot handle my coffee shop alone, so I have two choices. First, hire a barista who knows how to make coffee. This choice means I will need another person to do the imperative approach (the 'how' approach). Or the second choice: I can buy a coffee machine. There is an amazing coffee machine. I tell the machine what kind of coffee I want, and the machine brews it for me. The machine is really accurate, so each cup of coffee will taste the same. The trade-off? I must know exactly what kind of coffee I want and learn how to instruct the machine accordingly. This kind of approach is called declarative. We tell what we want, and the machine will do the how. We don't need to know how. The machine will handle it automatically. So, the declarative approach is also called the 'what' approach. Generally speaking, the declarative approach with a coffee machine has benefits. We can serve coffee quickly, with the same taste each time. Of course, having a barista can be a benefit, as a barista is a human with specialized skills and can thus improvise. But serving coffee is somewhat repetitive. Therefore, a machine would be more beneficial. Also, we can even further automate the job later. On the other hand, using a human barista is slower and can become a bottleneck when many coffees need to be served.
+
 ![Declarative Coffee Example](pics/declarative_coffee_example.png)
 
 The following case is what happens in the software world. 
@@ -34,6 +37,7 @@ The following case is what happens in the software world.
 As the business grows, there will be more applications to be deployed. Each deployment can have its own variation:
 
 We need a different way to deploy a Java or React application. One person will not be enough to handle all applications on time, so we can hire someone who knows how to operate Kubernetes. The person follows the imperative kubectl steps, which can be slow, but can improvise commands when needed. Alternatively, we can use declarative Kubernetes configuration. We need to know exactly what kind of Kubernetes object & configuration we need, write it in the configuration file, and ask the Kubernetes engine to automate the how. This approach is faster, and the Kubernetes internal process will create the object accurately. Also, further automation will be possible later.
+
 ![Imperative vs. Declarative in Software World](pics/software_imperative_declarative.png)
 
  Kubernetes provides a declarative way out of the box. We create a declarative configuration file that contains the 'what'. Specifically, the file defines what kind of Kubernetes object we want to create. This configuration file is a YAML-formatted text file. We then apply the configuration. In analogy, we press the 'create coffee' button. Kubernetes will then handle the object creation. We don't need to write multiple kubectl commands in order, as Kubernetes will handle those. We need to know exactly which object we need, along with each object's configuration. Do we need a deployment object? If so, which image to use? How many minimum and maximum replicas do we need? If we need service, will we need a type load balancer or a node port? Don't worry, although it seems complex, Kubernetes provides documentation on what to write.
@@ -43,16 +47,18 @@ In the long run, deploying an application to Kubernetes is a repetitive job. We 
 YAML, or 'Yet another markup language,' is a text file written following specific rules. A YAML file usually has the .yaml or .yml extension. Since it is a text file, we can use any text editor, such as Windows Notepad or Linux nano, to create or update it. YAML is usually used to write configuration files. The specific rule is that YAML elements must be maps or lists. This rule means that each YAML configuration is either a key-value pair or a list. Configuration grouped using space as indentation. In this course, I use Visual Studio Code as an editor. It has many plugins for YAML. Feel free to use any text editor you want. 
 
 This is an example of a YAML file. This file represents the configuration for coffee. The configuration is as detailed as possible, for example, the coffee size, coffee bean type, etc. The configuration can be nested and grouped by indentation. It does not matter whether you use two spaces, three spaces, et cetera, as long as you are consistent. That means, if you use two spaces for one level of indentation, the entire YAML file must be consistent with that two-space-is-one-indentation rule. Most YAML elements are key-value pairs, where the italicized text is the key and the plain text is the value. In this sample, the fields 'beverage', 'type', 'size', 'coffee', 'additional-mix', and 'cup' are at the same level. These fields are at the first level and do not have indentation. Coffee has 2nd-level elements, nested with two spaces: bean, size, and temperature. The additional mix includes 2nd-level elements, which are lists, with a dash character indicating each element. The list consists of milk and sugar. Each list element is an object with its own 3rd level elements. Milk has element type, size, and temperature. Sugar has an element type and size. The 2nd-level elements on the cup are size, color, and lid. Third-level elements on the lid are 'enabled' and 'colored'. The 2nd-level elements ('coffee', 'additional-mix', and 'cup') do not correlate with each other. The 2nd-level element is only related to the 1st-level element. It is a part of the 1st-level element. This lesson is just an introduction to YAML. The complete syntax reference is available in the last lecture of the course, titled 'Resources and References'. The sequence of elements does not matter in YAML, so I can write 'coffee' element first or 'cup' first, as long as the indentation is correct. 
+
 ![YAML Syntax](pics/yaml-syntax.png)
 
 For example, like this, where the order is totally different from the previous sample. This order does not matter, since the indentation is the same as the previous.
-![YAML File Example](pics/yaml_file_example.png)
 
+![YAML File Example](pics/yaml_file_example.png)
 
 [⬆ Back to top](#top)
 
 
 ## 19 Declarative Kubernetes
+
 [⬆ Back to top](#top)
 
 Declarative Kubernetes means we write a YAML configuration file, or a manifest. This YAML file leverages the Kubernetes REST API. Although the Kubernetes REST API can be accessed via HTTP, a common approach is to write a YAML manifest and apply it to Kubernetes. Since YAML uses the Kubernetes REST API, the documentation for YAML manifests is available at the same website as the Kubernetes REST API. We can also use the kubectl explain command to read the reference. 
@@ -67,14 +73,18 @@ Generally, a Kubernetes configuration file is a YAML file containing the followi
 - The status field contains the object's current state. For example, on a pod, this includes the pod's condition, the status of its containers, its virtual IP address, and other information that reveals what's happening to the pod. 
 
 Spec and status are the important parts of configuration. However, not all Kubernetes object contains spec and status. For example, an event object. Such a Kubernetes object typically contains static data, so it is not necessary to monitor the target or the object's actual state.
+
 ![Manifest Structure](pics/k8s_manifest_structure.png)
 
 The spec is what we usually define. It is the target state we need to define —or, in the previous analogy, the kind of coffee we want. We don't define the actual state. Kubernetes has several components, called controllers, that continuously monitor the target versus the actual state, In analogy, if we want cappuccino—the target state—the controller is monitoring which step of cappuccino-making we are at, or the cappuccino's actual state. The controller will then perform the necessary operations to achieve the target state in Kubernetes.
+
 ![Manifest Structure 2](pics/k8s_manifest_2.png)
 
 [⬆ Back to top](#top)
 
+
 ## 20 Declarative Kubernetes - Hello Sample
+
 [⬆ Back to top](#top)
 
 Download the course script from the last section of the course, with the title "Resources & References". Navigate to the "declarative" folder, then in the subfolder "hello". There will be two scripts: one for deployment and one for service. Open the deployment script.
@@ -221,7 +231,9 @@ Start minikube tunnel and try accessing the service from a web browser on the sp
 
 [⬆ Back to top](#top)
 
+
 ## 21 Replica Set
+
 [⬆ Back to top](#top)
 
 When we create a deployment, Kubernetes creates several resources. 
@@ -238,7 +250,9 @@ Between the deployment and the pod, there is a replica set. A replica set is cre
 
 [⬆ Back to top](#top)
 
+
 ## 22 Declarative Kubernetes - Update Delete
+
 [⬆ Back to top](#top)
 
 In practice, an image will be built and updated whenever a feature changes. If you look at the devops-blue repository, I have several tags - https://hub.docker.com/r/timpamungkas/devops-blue/tags. Currently, we deploy tag 1.0.0. What if we must deploy a different tag? Remember that the spec in the configuration file is the target state that we want. Kubernetes controller's responsibility is to implement that target state.
