@@ -14,6 +14,7 @@ Start minikube tunnel and don't close the terminal
     bash --> minikube tunnel
 
 ## 35 ConfigMap
+
 [⬆ Back to top](#top)
 
 Sometimes, we need to configure application parameters. For example, when we need to hit a partner API, we need to save the URL, which can differ between the staging and production environments. Another example is configuring the maximum number of database connections, but the value for this setting depends on the server's size. So the configuration can change at times, but the source code must remain the same. Most programming languages can read values from the operating system environment variables. In Kubernetes, we can define environment variables for a container, which the application then reads. However, an environment variable alone does not solve the problem when the configuration value can change. For this, we can store the configuration parameter in a Kubernetes ConfigMap and pass the ConfigMap value to the container's environment variable. When there are any changes, we can update the configmap value and then restart the pod. ConfigMap data can be accessed by any container in any pod on any worker node, making it suitable for configuration parameters.
@@ -120,7 +121,10 @@ spec:
 The names of each environment variable are free. Later, the devops-blue application will take a particular environment variable and process it. This method for retrieving data from environment variables is part of the application logic, not Kubernetes. Kubernetes supplies the environment variable name and its value. Environment variable values can be hardcoded in the deployment script, as in this first example. But we can also retrieve values from a configmap using the valueFrom element and a path to the configmap.
 
 Here isa diagram that visualizes how config maps and environment variables work. Notice the text color, which is not black as they refer. Of course, an application as a container image runs on a pod. The application has logic to read from an environment variable named MY_ENV_VARIABLE. This logic has nothing to do with Kubernetes. It depends on the application logic on how to read the environment variable. We create a configmap, which is stored in the Kubernetes cluster. This configmap, with a name in pink text, has data with a blue key. During deployment, we set an environment variable for container x that points to the pink config map with the blue key. This value is passed as a red environment variable name, which is then read by the logic in container X. If the other pod has a different container, where this second container also has logic to read from the same environment variable, We can configure in the same way, referring to the pink configmap with the blue key, as the red environment variable name.
-![KonfigMap](pics/configmap_example.jpg)
+
+<img src="pics/configmap_example.jpg" width="1000" />
+<br>
+<br>
 
 Try it. Run theconfiguration.
 
@@ -400,7 +404,9 @@ Delete the devops namespace to delete all resources in it and start the next sec
 
 [⬆ Back to top](#top)
 
+
 ## 36 Secret
+
 [⬆ Back to top](#top)
 
 Other than configmap, Kubernetes also provides secret, which stores data as a key-value pair, like configmap, but the value is base64 encoded, even for text data. Note that the value is still in plain text, not encrypted. It's only base64 encoded. Encoding is not encryption, and the term 'secret' can sometimes mislead. Base64 encoded data means that, although it will be difficult for the human eye to read the data, The machine can easily parse the base64-encoded string and retrieve the actual data. Even if humans get the base64 string, there are many free tools to decode it into its original, human-readable form.
@@ -408,7 +414,10 @@ Other than configmap, Kubernetes also provides secret, which stores data as a ke
 In the following example, we will use the same HTML page from the configmap lesson. The color and some text will be taken from a secret, via an environment variable. Some other text will be taken from a configmap, via an environment variable. As we will see, we can mix configmap and secret usage. 
 
 The process for using secrets is the same as for configmaps, as shown in this diagram. The difference is in the configuration file as indicated by the red arrows. First, the Kubernetes object is a secret. The secret's value is base64-encoded. So instead of a readable string 'I am a rabbit', this is the base64 encoded value. And to refer to the secret, we use the element 'secret key ref' instead of 'configmap key ref'
-![KonfigMap](pics/configmap_example.jpg)
+
+<img src="pics/secret.png" width="1000" />
+<br>
+<br>
 
 Try it.Run the devops-secret configuration file - \devops-kubernetes-resources-references\kubernetes-istio-scripts\kubernetes\secret\devops-secret.yml. 
 
