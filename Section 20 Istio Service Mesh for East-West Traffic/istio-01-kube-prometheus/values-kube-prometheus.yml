@@ -1,0 +1,49 @@
+grafana:
+  adminPassword: changeme
+  ingress:
+    enabled: true
+    ingressClassName: haproxy
+    annotations: 
+      ingress.kubernetes.io/rewrite-target: /
+    path: /grafana
+  grafana.ini: 
+    server:
+      root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana"
+      serve_from_sub_path: true
+
+prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: haproxy
+    annotations:
+      ingress.kubernetes.io/rewrite-target: /
+    paths:
+    - /prometheus
+  prometheusSpec:
+    routePrefix: /prometheus
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorNamespaceSelector: {}
+    podMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}
+    serviceMonitorSelector: {}
+    logLevel: debug
+  resources:
+    limit:
+      cpu: "0.3"
+      memory: 384Mi
+
+alertmanager:
+  ingress:
+    enabled: true
+    ingressClassName: haproxy
+    annotations:
+      ingress.kubernetes.io/rewrite-target: /
+    paths:
+    - /alertmanager
+  alertmanagerSpec:
+    routePrefix: /alertmanager
+  resources:
+    limit:
+      cpu: "0.2"
+      memory: 128Mi
