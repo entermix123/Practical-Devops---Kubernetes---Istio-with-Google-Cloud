@@ -1,0 +1,68 @@
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  namespace: devops
+  name: devops-white-clusterip
+  labels:
+    kiali_wizard: request_routing
+  annotations: ~
+spec:
+  host: devops-white-clusterip.devops.svc.cluster.local
+  subsets:
+  - name: 2.0.0
+    labels:
+      version: 2.0.0
+  - name: 2.0.1
+    labels:
+      version: 2.0.1
+  trafficPolicy: ~
+
+---
+
+kind: VirtualService
+apiVersion: networking.istio.io/v1
+metadata:
+  namespace: devops
+  name: devops-white-clusterip
+  labels:
+    kiali_wizard: request_routing
+spec:
+  http:
+  - route:
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: 2.0.0
+      weight: 0
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: 2.0.1
+      weight: 100
+    match:
+    - headers:
+        x-redirect-to:
+          exact: pod-2.0.1
+  - route:
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: 2.0.0
+      weight: 100
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: 2.0.1
+      weight: 0
+    match:
+    - headers:
+        x-redirect-to:
+          exact: pod-2.0.0
+  - route:
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: 2.0.0
+      weight: 50
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: 2.0.1
+      weight: 50
+  hosts:
+  - devops-white-clusterip.devops.svc.cluster.local
+  gateways: ~

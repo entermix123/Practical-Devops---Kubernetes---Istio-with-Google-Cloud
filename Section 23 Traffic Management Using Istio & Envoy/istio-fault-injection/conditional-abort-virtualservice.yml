@@ -1,0 +1,38 @@
+kind: VirtualService
+apiVersion: networking.istio.io/v1
+metadata:
+  name: devops-white-clusterip
+  namespace: devops
+  labels:
+    kiali_wizard: fault_injection
+spec:
+  hosts:
+  - devops-white-clusterip.devops.svc.cluster.local
+  http:
+  - match:
+    - sourceLabels:
+        app: istio-fault-yellow
+    route:
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: old-white
+      weight: 50
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: new-white
+      weight: 50
+    fault:
+      abort:
+        httpStatus: 429
+        percentage:
+          value: 100
+  - route:
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: old-white
+      weight: 50
+    - destination:
+        host: devops-white-clusterip.devops.svc.cluster.local
+        subset: new-white
+      weight: 50
+status: {}

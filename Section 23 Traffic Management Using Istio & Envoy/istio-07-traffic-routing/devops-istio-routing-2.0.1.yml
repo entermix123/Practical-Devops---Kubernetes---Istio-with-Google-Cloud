@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: istio-routing-deployment-white-additional
+spec:
+  selector:
+    matchLabels:
+      app: istio-routing-white
+  template:
+    metadata:
+      labels:
+        app: istio-routing-white
+        version: 2.0.1
+    spec:
+      containers:
+      - name: devops-white
+        image: timpamungkas/devops-white:2.0.1
+        resources:
+          requests:
+            cpu: "0.02"
+            memory: 32Mi
+          limits:
+            cpu: "0.3"
+            memory: 384Mi
+        ports:
+        - name:  http
+          containerPort: 8113
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/white/actuator/health/readiness
+            port: 8113
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/white/actuator/health/liveness
+            port: 8113
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+  replicas: 1
