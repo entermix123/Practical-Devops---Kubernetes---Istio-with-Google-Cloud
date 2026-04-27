@@ -1,0 +1,40 @@
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  namespace: devops
+  name: devops-yellow-clusterip
+  labels:
+    kiali_wizard: request_routing
+  annotations: ~
+spec:
+  host: devops-yellow-clusterip.devops.svc.cluster.local
+  subsets:
+  - name: yellow
+    labels:
+      version: 2.0.0
+  trafficPolicy:
+    outlierDetection:
+      consecutive5xxErrors: 5
+      interval: 1m
+      baseEjectionTime: 1m
+      maxEjectionPercent: 100
+
+---
+
+kind: VirtualService
+apiVersion: networking.istio.io/v1
+metadata:
+  namespace: devops
+  name: devops-yellow-clusterip
+  labels:
+    kiali_wizard: request_routing
+spec:
+  http:
+  - route:
+    - destination:
+        host: devops-yellow-clusterip.devops.svc.cluster.local
+        subset: yellow
+      weight: 100
+  hosts:
+  - devops-yellow-clusterip.devops.svc.cluster.local
+  gateways: ~

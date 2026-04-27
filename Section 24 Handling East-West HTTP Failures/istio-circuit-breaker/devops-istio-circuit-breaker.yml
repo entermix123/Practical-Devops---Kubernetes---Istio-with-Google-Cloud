@@ -1,0 +1,237 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  devops
+  labels:
+    istio-injection: enabled
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: istio-circuit-breaker-deployment-blue
+spec:
+  selector:
+    matchLabels:
+      app: istio-circuit-breaker-blue
+  template:
+    metadata:
+      labels:
+        app: istio-circuit-breaker-blue
+        version: 2.0.0
+    spec:
+      containers:
+      - name: devops-blue
+        image: timpamungkas/devops-blue:2.0.0
+        resources:
+          requests:
+            cpu: "0.1"
+            memory: 32Mi
+          limits:
+            cpu: "0.3"
+            memory: 384Mi
+        ports:
+        - name:  http
+          containerPort: 8111
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/readiness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/blue/actuator/health/liveness
+            port: 8111
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        env:
+          - name: DEVOPS_YELLOW_URL
+            value: http://devops-yellow-clusterip.devops:8112/devops/yellow
+          - name: DEVOPS_WHITE_URL
+            value: http://devops-white-clusterip.devops:8113/devops/white
+  replicas: 1
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: istio-circuit-breaker-deployment-yellow
+spec:
+  selector:
+    matchLabels:
+      app: istio-circuit-breaker-yellow
+  template:
+    metadata:
+      labels:
+        app: istio-circuit-breaker-yellow
+        version: 2.0.0
+    spec:
+      containers:
+      - name: devops-yellow
+        image: timpamungkas/devops-yellow:2.0.0
+        resources:
+          requests:
+            cpu: "0.1"
+            memory: 32Mi
+          limits:
+            cpu: "0.3"
+            memory: 384Mi
+        ports:
+        - name:  http
+          containerPort: 8112
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/yellow/actuator/health/readiness
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/yellow/actuator/health/liveness
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        env:
+          - name: DEVOPS_WHITE_URL
+            value: http://devops-white-clusterip.devops:8113/devops/white
+  replicas: 1
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops
+  name: istio-circuit-breaker-deployment-white
+spec:
+  selector:
+    matchLabels:
+      app: istio-circuit-breaker-white
+  template:
+    metadata:
+      labels:
+        app: istio-circuit-breaker-white
+        version: 2.0.0
+    spec:
+      containers:
+      - name: devops-white
+        image: timpamungkas/devops-white:2.0.0
+        resources:
+          requests:
+            cpu: "0.1"
+            memory: 32Mi
+          limits:
+            cpu: "0.3"
+            memory: 384Mi
+        ports:
+        - name:  http
+          containerPort: 8113
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /devops/white/actuator/health/readiness
+            port: 8113
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /devops/white/actuator/health/liveness
+            port: 8113
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+  replicas: 1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-blue-clusterip
+  labels:
+    app: istio-circuit-breaker-blue
+spec:
+  selector:
+    app: istio-circuit-breaker-blue
+  ports:
+  - port: 8111
+    name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-yellow-clusterip
+  labels:
+    app: istio-circuit-breaker-yellow
+spec:
+  selector:
+    app: istio-circuit-breaker-yellow
+  ports:
+  - port: 8112
+    name: http
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops
+  name: devops-white-clusterip
+  labels:
+    app: istio-circuit-breaker-white
+spec:
+  selector:
+    app: istio-circuit-breaker-white
+  ports:
+  - port: 8113
+    name: http
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: devops
+  name: ingress-istio-circuit-breaker-haproxy-blue
+  labels:
+    app.kubernetes.io/name: ingress-istio-circuit-breaker-haproxy-blue
+spec:
+  ingressClassName: haproxy
+  rules:
+  - http:
+      paths:
+      - path: /devops/blue
+        pathType: Prefix
+        backend:
+          service:
+            name: devops-blue-clusterip
+            port:
+              number: 8111
