@@ -1,0 +1,6 @@
+jaeger:
+  ingress:
+    enabled: true
+    ingressClassName: haproxy
+    hosts:
+      - jaeger.local
