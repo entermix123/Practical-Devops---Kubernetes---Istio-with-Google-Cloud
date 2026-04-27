@@ -16,6 +16,7 @@ Start minikube tunnel and don't close the terminal
     bash --> minikube tunnel
 
 ## 31 Volume - Theory
+
 [⬆ Back to top](#top)
 
 Pod is not something permanent. A pod can be destroyed. For example, when we reduce the pod replicas. When a pod is destroyed, its containers are also destroyed, along with all data stored in them. When we need persistent data, we have two choices.
@@ -29,36 +30,56 @@ Not all volume types can be mounted by many pods. This way, when a container or 
 We can also mount multiple volumes into a single pod. Some volumes are node-local (such as local persistent volume or host Path). If the worker node crashes, the volume becomes inaccessible.
 
 We can use external volumes such as cloud disks or network file systems. These volumes remain available even when nodes are recreated. When discussing volume, we should remember that a pod can contain multiple containers.
-![Volume Types](pics/volume-types.jpg)
 
+<img src="pics/volume-types.jpg" width="800" />
+<br>
+<br>
 
 Let's go back to the early ship analogy. When a pod has a container (John and Grace in the analogy), each container, by default, has its own private shelf for storing data (books in the analogy). This means John cannot see Grace's book, and vice versa. Even if there is a second pod replica, John in replica 1 cannot see data in replica 2, and Grace in replica 2 cannot see the other Grace's data. By default, containers in the same pod cannot see each other's data, nor can containers across different replicas. 
-![Default No Volume](pics/default-no-volume.jpg)
+
+<img src="pics/default-no-volume.jpg" width="800" />
+<br>
+<br>
 
 However, some books might be shared between John and Grace. So they decided to buy a shared bookshelf and put it on the pod. So John and Grace have their own book, as well as some shared data. The shared bookshelf can be limited to John and Grace only. Therefore, even if there is a third container, Rose, in the same pod, Rose cannot access the shared book.
 
 This shared bookshelf is known as an "empty directory" volume. The second pod replica will have this behaviour, but the shared bookshelf will only be on the pod scope. This means that John on pod 1 can only access the shared bookshelf on his own pod replica.
-![Volume EmptyDir](pics/volume-emptydir.jpg)
+
+<img src="pics/volume-emptydir.jpg" width="800" />
+<br>
+<br>
 
 Containers can also share an empty Directory volume that is local to their pod replica. This means pod X replica 1 has its own empty directory and is not accessible to other replicas of pod X. Not all containers in the same pod automatically gain access to this volume. They need to be configured to use the empty directory. An Empty Directory volume is, well, empty when a pod is created. So it is not a persistent volume.
 
 When a pod is destroyed, like when a replica is reduced or a deployment is restarted, the data will be lost. However, when the container within a pod is crashed and destroyed, or restarted, the empty directory data remains intact because it is local to the pod, not to the container. By nature, an empty directory is suitable for writing temporary files or application state to be shared among multiple containers in a pod.
-![Volume Pod EmptyDir](pics/volume-emptydir-2.jpg)
+
+<img src="pics/volume-emptydir-2.jpg" width="800" />
+<br>
+<br>
 
 What if John needs to share a book among themselves, including other pod replicas? Or even another kind of pod? In that case, we can use an external bookshelf and let other replicas or pods know about it. In this case, all replicas will have the same access. So if John and Grace's container has access to the bookshelf, all John and Grace's replicas of this pod will have it too. Also, we can give Thomas access, even if Thomas lives in a different pod. 
-![External Volume](pics/volume-external-volume.jpg)
+
+<img src="pics/volume-external-volume.jpg" width="800" />
+<br>
+<br>
 
 Such an external bookshelf is called a persistent volume in Kubernetes. They can be local disks, network disks, or various cloud disks. Kubernetes also has some built-in volume types. They are configmap and secret, stored on the Kubernetes control plane node. 
 
 Local persistent volume is a disk attached to a worker node. This means all pods on the same worker node have access to the local volume. But different worker nodes do not have access to each other.
 
 In this sample, the local volume on worker node alpha is accessible only by pod "A" replica 1, pod "A" replica 2, and pod B replica 1. Local volume on worker node beta can only be accessed by pod "A" replica 3, pod "A" replica 4, and pod B replica 2. Also, data on volume alpha may differ from data on volume beta.
-![Volume Local](pics/volume-local.jpg)
+
+<img src="pics/volume-local.jpg" width="800" />
+<br>
+<br>
 
 Data at Local volume persists across pod restarts, but if a worker node is destroyed, the data on that node will be lost.
 
 The most persistent data is when Kubernetes uses an external disk, An external disk can be on-premises network storage, a file server, or a cloud disk like Google Persistent Disk, AWS Storage, Azure Disk, or another provider. A container is then mounted to this volume, and this can be from anywhere. Since this volume is dedicated, any changes to a Kubernetes node, such as destroying a node, will not affect the volume, and the data will persist.
-![Volume External Disk](pics/volume-external-disk.jpg)
+
+<img src="pics/volume-external-disk.jpg" width="800" />
+<br>
+<br>
 
 The trade-off is that we need to set up our own server or pay for a cloud product for this volume. 
 
@@ -69,7 +90,9 @@ When defining a Kubernetes persistent volume, several access mode parameters are
 
 [⬆ Back to top](#top)
 
+
 ## 32 EmptyDir
+
 [⬆ Back to top](#top)
 
 Open the configuration file in the volume folder - \devops-kubernetes-resources-references\kubernetes-istio-scripts\kubernetes\volume\devops-volume-empty-dir.yml. We will see the configuration for the empty directory. 
@@ -252,7 +275,9 @@ Delete the resources to start fresh to the next lesson
 
 [⬆ Back to top](#top)
 
+
 ## 33 HostPath
+
 [⬆ Back to top](#top)
 
 Minikube supports volume with type hostPath. This volume mounts a file or directory from the host node's filesystem into the pod. If we have a multi-node cluster and a pod is restarted for some reason and ends up on another node, the new pod will not be able to access the old data. That's why hostPath volumes work well only on single-node clusters like minikube.
@@ -419,7 +444,9 @@ Delete the resources so we can start fresh the next lesson
 
 [⬆ Back to top](#top)
 
+
 ## 34 Local
+
 [⬆ Back to top](#top)
 
 Minikube supports local volume. However, we need a workaround in this lesson to ensure the designated folder exists on the minikube. For this lesson, we will SSH into minikube and create the folders to be bound to the volume. Unlike hostPath, Kubernetes ensures that a pod using a local volume is always provisioned on the same node as the volume. This behavior remains even after a pod restarts.
